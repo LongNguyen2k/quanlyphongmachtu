@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+  <!-- Brand -->
+   <a class="navbar-brand" href="#">
+    <img src="{{url_for('static', filename='uploads/hospital.png')}}" alt="Logo" style="width:40px;">
+  </a>
+
+  <!-- Toggler/collapsibe Button -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Navbar links -->
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('home') }}">Trang chủ</a>
+      </li>
+       {% if current_user.is_authenticated %}
+        <li class="nav-item">
+            <a class="nav-link text-danger" href="{{ url_for('profile_page', user_id = current_user.id) }}">
+                {% if current_user.avatar %}
+                  <img src="{{ current_user.avatar}}" class="rounded-circle" width="30" alt="{{current_user.first_name}}{{ current_user.last_name }}" />
+                {% else %}
+                  <img class="rounded-circle" src="{{ url_for('static', filename='uploads/blank_img.jpg')}}" width="30" alt="{{current_user.first_name}}{{ current_user.last_name }}" />
+                {% endif%}
+               {{current_user.first_name}} {{ current_user.last_name }}
+            </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('signout')}}">Đăng Xuất</a>
+        </li>
+       {% else %}
+          <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user_signin') }}">Đăng Nhập</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('register') }}">Đăng Ký</a>
+        </li>
+       {% endif %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+          Dropdown link
+        </a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#">Link 1</a>
+          <a class="dropdown-item" href="#">Link 2</a>
+          <a class="dropdown-item" href="#">Link 3</a>
+        </div>
+    </li>
+    </ul>
+  </div>
+</nav>

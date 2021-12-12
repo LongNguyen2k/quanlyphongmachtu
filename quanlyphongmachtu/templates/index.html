@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends 'layout/base.html'%}
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+      {%block title%} Trang chủ {%endblock%}
+</head>
+<body>
+    {% block content %}
+     {% if current_user.is_authenticated %}
+        <h1 class="text-info text-center">CHÀO MỪNG ĐẾN PHÒNG KHÁM</h1>
+        <h3 class="text-success text-center">{{current_user.first_name}} {{ current_user.last_name }}  </h3>
+        <span  class=" text-info font-weight-bold" >CHỌN ĐĂNG KÝ KHÁM ĐỂ ĐẶT LỊCH KHÁM Ở PHÒNG MẠCH</span>
+          <br>
+<!--                 {% for p in phones %}-->
+<!--                            <p class="font-weight-bold">{{p.phone_type}}: {{p.number_phone}}</p>-->
+<!--                {% endfor%}-->
+            {% if phones.count() == 0  %}
+                 <form method="post" action="{{ url_for('add_phones')}}">
+                    <div class="form-group">
+                        <input type="hidden" name="user_id" value="{{current_user.id}}">
+                         <label class="text-danger" for="phone">Nhập Số Điện Thoại Để Bắt Đầu Đăng Ký Khám</label>
+                        <input type="number" name="phone" class="form-control" id="phone" placeholder="Nhập Số Điện Thoại"  required/>
+                        </br>
+                        <input type="submit" class="btn btn-danger" value="Thêm Số Điện Thoạis"/>
+                    </div>
+                </form>
+            {% else %}
+
+                  <div class="row">
+
+                        <a href="{{url_for('dang_ky_kham', user_id = current_user.id)}}" class="btn btn-success">Đăng Ký Khám</a>
+                   </div>
+                    </br>
+                    <div class="row">
+                        <a  class="btn btn-success" href="{{url_for('xemthongtin_khambenh', user_id=current_user.id)}}">Xem thông tin Khám Bệnh</a>
+                    </div>
+
+            {% endif %}
+
+    {% else %}
+        <h1 class="subject text-center text-danger">
+            Quản Lý Phòng Mạch Tư
+        </h1>
+    <h3 class="text-Success"> Người dùng chưa đăng nhập </h3>
+     {% endif %}
+    {% endblock %}
+
+</body>
+</html>

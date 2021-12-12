@@ -1,0 +1,64 @@
+{%extends 'layout/base.html'%}
+
+{% block title%} Dang ky nguoi dung  {% endblock%}
+
+{%block content%}
+
+
+<h1 class="text-center text-info">ĐĂNG KÝ TÀI KHOẢN KHÁM BỆNH</h1>
+{% if error_msg %}
+<div class="alert alert-danger">
+    {{error_msg}}
+</div>
+{% endif %}
+{% if error_msg_user %}
+<div class="alert alert-danger">
+    {{error_msg_user}}
+</div>
+{% endif %}
+<form method="post" action="{{ url_for('register')}}" enctype="multipart/form-data">
+    <div class="form-group">
+         <label for="firstname"> Ho Và Tên Lót</label>
+        <input type="text" name="firstname" class="form-control" id="firstname" placeholder="Nhập Họ Tên Lót"  required/>
+    </div>
+     <div class="form-group">
+         <label for="lastname"> Tên</label>
+        <input type="text" name="lastname" class="form-control" id="lastname" placeholder="Nhập Tên"  required/>
+    </div>
+    <div class="form-group">
+         <label for="gender">Giới Tính</label>
+        <select id="gender" name="gender" class="form-control">
+            <option value="male">Nam</option>
+             <option value="female">Nữ</option>
+        </select>
+    </div>
+    <div class="form-group">
+         <label for="avatar"> Ảnh Đại Diện</label>
+        <input type="file" name="avatar" class="form-control" id="avatar"  />
+    </div>
+    <div class="form-group">
+        <label for="birthday">Ngày Tháng Năm Sinh</label>
+        <input type="date" id="birthday" name="birthday" class="form-control" required />
+    </div>
+    <div class="form-group">
+          <label for="address_street">Địa chỉ Liên Lạc</label>
+          <input type="text" id="address_street" name="address_street" class="form-control" required />
+    </div>
+     <div class="form-group">
+         <label for="username"> Username</label>
+        <input type="text" name="username" class="form-control" id="username" placeholder="Nhap Username" required />
+    </div>
+     <div class="form-group">
+         <label for="password"> Password</label>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Nhap Password" required />
+    </div>
+     <div class="form-group">
+         <label for="confirmPassword"> Confirm Password</label>
+        <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Nhap confirmPassword" required />
+    </div>
+      <div class="form-group">
+
+        <input type="submit" class="btn btn-danger" value="Đăng Ký" />
+    </div>
+</form>
+{% endblock %}

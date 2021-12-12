@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+{% extends 'layout/base.html'%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+      {%block title%} Trang Thông Tin Cá Nhân {%endblock%}
+
+</head>
+<body>
+    {% block content %}
+
+    <div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+             {% if current_user.avatar %}
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img width="270" class="rounded-circle mt-5" src="{{ current_user.avatar}}"><span class="font-weight-bold">{{current_user.first_name}} {{current_user.last_name}}</span><span class="text-black-50">Tên Tài Khoản:{{account.username}}</span><span> </span></div>
+            {% else %}
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img width="100" class="rounded-circle mt-5" src="{{ url_for('static', filename='uploads/blank_img.jpg')}}"><span class="font-weight-bold">{{current_user.first_name}} {{current_user.last_name}}</span><span class="text-black-50">Tên Tài Khoản: {{account.username}}</span><span> </span></div>
+             {% endif%}
+        </div>
+        <div class="col-md-5 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Thông Tin Người Dùng</h4>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <label class="labels">Họ và Tên</label>
+                        <p class="font-weight-bold">{{current_user.first_name}} {{current_user.last_name}}</p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">Số Điện Thoại</label>
+                            {% for p in phones%}
+                            <p class="font-weight-bold">{{p.phone_type}}: {{p.number_phone}}</p>
+                            {% endfor%}
+                        </div>
+                    <div class="col-md-12"><label class="labels">Địa chỉ</label>
+                        <p class="font-weight-bold">{{address.address_street}} {{address.city}} {{address.country}}</p>
+                    </div>
+                    <div class="col-md-12"><label class="labels">Giới Tính</label>
+                        {% if current_user.gender.__eq__("male") %}
+                        <p class="font-weight-bold">Nam</p>
+                        {%else%}
+                        <p class="font-weight-bold">Nữ</p>
+                        {%endif%}
+                    </div>
+                    <div class="col-md-12"><label class="labels">Ngày Tháng Năm Sinh</label> <p class="font-weight-bold">{{current_user.birthday}}</p></div>
+                    <div class="col-md-12"><label class="labels">Ngày Tạo Tài Khoản</label> <p class="font-weight-bold">{{account.created_date}}</p></div>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+
+                                    {% for message in messages %}
+                                        <div class="alert alert-success alert-dismissable" role="alert">
+
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                                                <span aria-hidden="true">x</span>
+                                            </button>
+                                            {{message}}
+                                        </div>
+                                    {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        {% if error_msg %}
+                            <div class="alert alert-danger">
+                                {{error_msg}}
+                            </div>
+                        {% endif %}
+                </div>
+               {% if phones.count() == 0  %}
+                     <form method="post" action="{{ url_for('add_phones')}}">
+                        <div class="form-group">
+                            <input type="hidden" name="user_id" value="{{current_user.id}}">
+                             <label class="text-danger" for="phone">Nhập Số Điện Thoại Để Bắt Đầu Đăng Ký Khám</label>
+                            <input type="number" name="phone" class="form-control" id="phone" placeholder="Nhập Số Điện Thoại"  required/>
+                            </br>
+                            <input type="submit" class="btn btn-danger" value="Thêm Số Điện Thoạis"/>
+                        </div>
+                    </form>
+                 {% else %}
+                <div class="mt-5 text-center"><a href="{{url_for('update_profile')}}" class="btn btn-info profile-button" data-toggle="modal" data-target="#myModal{{current_user.id}}" type="button">Edit Profile</a></div>
+              {% endif %}
+                <!-- The Modal -->
+                    <div class="modal fade" id="myModal{{current_user.id}}" role="dialog">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+
+                          <!-- Modal Header -->
+                          <div class="modal-header">
+                            <h4 class="modal-title">Cập nhật thông tin bệnh nhân</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+
+                          <!-- Modal body -->
+                          <div class="modal-body">
+                            <form action="{{url_for('update_profile')}}" method="POST">
+                                <input type="hidden" value="{{current_user.id}}" name="user_id">
+                               <div class="form-group">
+                                  <label>Họ và Tên Lót:</label>
+                                  <input type="text" class="form-control" name="first_name" required value="{{current_user.first_name}}">
+                               </div>
+                                <div class="form-group">
+                                  <label>Tên Bệnh Nhân:</label>
+                                  <input type="text" class="form-control" name="last_name" required value="{{current_user.last_name}}">
+                               </div>
+                              <div class="form-group">
+                                  <label>Giới Tính:</label>
+                                 <select name="gender" class="form-control">
+                                    <option value="male">Nam</option>
+                                     <option value="female">Nữ</option>
+                                </select>
+                               </div>
+                                 <div class="form-group">
+                                  <label>Ngày Tháng Năm Sinh:</label>
+                                  <input type="date" class="form-control" name="birthday" required value="{{current_user.birthday}}">
+                               </div>
+                             {% if phones.count() != 0  %}
+                                 <div class="form-group">
+                                  <label>Số điện thoại mặc định:{{phones[0].phone_type}}</label>
+                                  <input type="number" class="form-control" name="phone" required value="{{phones[0].number_phone}}">
+                               </div>
+                          {% endif %}
+                                <div class="form-group">
+                                  <label>Địa chỉ nhà:</label>
+                                  <input type="text" class="form-control" name="address_street" required value="{{address.address_street}}">
+                               </div>
+                                 <div class="form-group">
+                                  <label>Tên Thành Phố:</label>
+                                  <input type="text" class="form-control" name="address_city" required value="{{address.city}}">
+                               </div>
+                                <div class="form-group">
+                                  <label>Tên Nước:</label>
+                                  <input type="text" class="form-control" name="address_country" required value="{{address.country}}">
+                               </div>
+                               <div class="form-group">
+                                  <button class="btn btn-primary" type="submit">Cập nhật thông tin</button>
+                               </div>
+                            </form>
+                          </div>
+
+                          <!-- Modal footer -->
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Đóng</button>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+            </div>
+        </div>
+            <div class="col-md-4">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-between align-items-center experience"><span>Tương tác</span></div><br>
+                    <div class="col-md-12"><button class="btn btn-info profile-button" type="button">Xem thông tin khám bệnh</button></div> <br>
+                    <div class="col-md-12"><button class="btn btn-info profile-button" type="button">Xem Phiếu khám bác sĩ</button></div> <br>
+                    <div class="col-md-12"><button class="btn btn-info profile-button" type="button">Xem thông tin hóa đơn</button></div> <br>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% endblock %}
+</body>
