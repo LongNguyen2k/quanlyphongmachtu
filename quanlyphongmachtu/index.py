@@ -3,7 +3,7 @@ from quanlyphongmachtu import app, login
 import os
 import utils
 from quanlyphongmachtu.admin import *
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 import cloudinary.uploader
 
 
@@ -22,13 +22,13 @@ def load_user(user_id):
 
 @app.route('/admin-login', methods=['post'])
 def admin_login():
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = utils.check_admin_login(username=username, password=password)
-        if user:
-            #ghi nhan trang thai dang nhap
-            login_user(user=user)
-        return redirect('/admin')
+    username = request.form.get('username')
+    password = request.form.get('password')
+    user = utils.check_admin_login(username=username, password=password)
+    if user:
+        # ghi nhan trang thai dang nhap
+        login_user(user=user)
+    return redirect('/admin')
 
 
 @app.route('/login', methods=['get', 'post'])
@@ -55,40 +55,40 @@ def user_signin():
 @app.route("/register", methods=['get', 'post'])
 def register():
     error_msg = ''
-    error_msg_user=''
+    error_msg_user = ''
     if request.method == 'POST':
-            firstname = request.form['firstname']
-            lastname = request.form['lastname']
-            gender = request.form['gender']
-            birthday = request.form['birthday']
-            address = request.form['address_street']
-            username = request.form['username']
-            password = request.form['password']
-            confirm_password = request.form['confirmPassword']
-            user = utils.check_username(username)
-            user_role = request.form['user_role']
-            if user:
-                error_msg_user = 'Username đã có người sử dụng'
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        gender = request.form['gender']
+        birthday = request.form['birthday']
+        address = request.form['address_street']
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirmPassword']
+        user = utils.check_username(username)
+        user_role = request.form['user_role']
+        if user:
+            error_msg_user = 'Username đã có người sử dụng'
+        else:
+            if password.strip().__eq__(confirm_password.strip()):
+                file = request.files.get('avatar')
+                avatar = None
+                if file:
+                    res = cloudinary.uploader.upload(file)
+                    avatar = res['secure_url']
+                try:
+                    utils.add_user(firstname=firstname, lastname=lastname,
+                                   username=username, password=password,
+                                   gender=gender,
+                                   birthday=birthday,
+                                   address=address,
+                                   avatar=avatar,
+                                   user_role=user_role)
+                    return redirect(url_for("user_signin"))
+                except Exception as ex:
+                    error_msg = 'Đã có lỗi xảy ra' + str(ex)
             else:
-                if password.strip().__eq__(confirm_password.strip()):
-                    file = request.files.get('avatar')
-                    avatar = None
-                    if file:
-                        res = cloudinary.uploader.upload(file)
-                        avatar = res['secure_url']
-                    try:
-                        utils.add_user(firstname=firstname, lastname=lastname,
-                                          username=username, password=password,
-                                          gender=gender,
-                                          birthday=birthday,
-                                          address=address,
-                                          avatar=avatar,
-                                          user_role=user_role)
-                        return redirect(url_for("user_signin"))
-                    except Exception as ex:
-                        error_msg = 'Đã có lỗi xảy ra' + str(ex)
-                else:
-                    error_msg = "Mat khau khong khop!"
+                error_msg = "Mat khau khong khop!"
 
     return render_template('register.html', error_msg=error_msg, error_msg_user=error_msg_user)
 
@@ -100,6 +100,7 @@ def signout():
 
 
 @app.route("/profile/<int:user_id>")
+@login_required
 def profile_page(user_id):
     user_info = utils.get_user_by_id(user_id)
     account = utils.account_info(user_id)
@@ -109,6 +110,7 @@ def profile_page(user_id):
 
 
 @app.route("/dangkykham/<int:user_id>", methods=['get', 'post'])
+@login_required
 def dang_ky_kham(user_id):
     error_msg = None
     user_info = utils.get_user_by_id(user_id)
@@ -124,12 +126,21 @@ def dang_ky_kham(user_id):
             except Exception as ex:
                 error_msg = 'Đã có lỗi xảy ra' + str(ex)
         else:
-           error_msg = "Đặt Lịch Khám Không Phù Hợp"
+            error_msg = "Đặt Lịch Khám Không Phù Hợp"
     return render_template('dangkykham.html',
                            error_msg=error_msg, account=account, phones=phones, address=address)
 
 
+@app.route("/ytadangkykham/<int:nurse_id>", methods=['get', 'post'])
+@login_required
+def dangkykham_yta(nurse_id):
+    return render_template('dangkykhamyta.html')
+
+
+
+
 @app.route("/xemthongtinkham/<int:user_id>", methods=['get'])
+@login_required
 def xemthongtin_khambenh(user_id):
     thongtin_khambenh = utils.xemthongtin_khambenh(user_id=user_id)
     user_info = utils.get_user_by_id(user_id)
@@ -140,7 +151,6 @@ def xemthongtin_khambenh(user_id):
                            phones=phones,
                            address=address,
                            thongtin_khambenh=thongtin_khambenh)
-
 
 
 @app.route("/add-phone", methods=['post'])
@@ -155,6 +165,7 @@ def add_phones():
 
 
 @app.route("/profile/update/", methods=["post"])
+@login_required
 def update_profile():
     if request.method == 'POST':
         user_id = request.form.get('user_id')

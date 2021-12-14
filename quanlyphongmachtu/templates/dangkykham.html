@@ -8,15 +8,16 @@
 <h2 class="text-danger text-center" xmlns="http://www.w3.org/1999/html">ĐĂNG KÝ KHÁM BỆNH</h2>
 <h3 class="text-info"> Thông Tin Đăng Ký Khám </h3>
 <ul class="list-group">
-  <li class="list-group-item list-group-item-action"><p class="text-secondary">Họ Tên</p><span class="font-weight-normal text-uppercase">{{current_user.first_name}} {{current_user.last_name}}</span></li>
-  <li class="list-group-item list-group-item-action"><p class="text-secondary">Số Điện Thoại</p>
-      {% for p in phones%}
-      <span class="font-weight-normal text-uppercase">{{p.phone_type}}: {{p.number_phone}}</span>
-      <br>
-      {%endfor%}
-  </li>
-  <li class="list-group-item list-group-item-action"><p class="text-secondary">Địa Chỉ</p>
-      <span class="font-weight-normal text-uppercase">{{address.address_street}}
+    <li class="list-group-item list-group-item-action"><p class="text-secondary">Họ Tên</p><span
+            class="font-weight-normal text-uppercase">{{current_user.first_name}} {{current_user.last_name}}</span></li>
+    <li class="list-group-item list-group-item-action"><p class="text-secondary">Số Điện Thoại</p>
+        {% for p in phones%}
+        <span class="font-weight-normal text-uppercase">{{p.phone_type}}: {{p.number_phone}}</span>
+        <br>
+        {%endfor%}
+    </li>
+    <li class="list-group-item list-group-item-action"><p class="text-secondary">Địa Chỉ</p>
+        <span class="font-weight-normal text-uppercase">{{address.address_street}}
       {% if address.city != NONE %}
         {{address.city}}
       {% else %}
@@ -28,32 +29,32 @@
         <p class="text-danger">Chưa Cập nhật Tên Nước</p>
       {%endif%}
   </span>
-  </li>
-  <li class="list-group-item list-group-item-action"><p class="text-secondary">Giới Tính</p>
-      {% if current_user.gender.__eq__("male") %}
-      <span class="font-weight-normal text-uppercase">Nam</span>
-      {%else%}
-      <span class="font-weight-normal text-uppercase">Nữ</span>
-      {%endif%}
-  </li>
-  <li class="list-group-item list-group-item-action"><p class="text-secondary">Ngày Tháng Năm Sinh</p><span class="font-weight-normal text-uppercase">{{current_user.birthday}}</span></li>
+    </li>
+    <li class="list-group-item list-group-item-action"><p class="text-secondary">Giới Tính</p>
+        {% if current_user.gender.__eq__("male") %}
+        <span class="font-weight-normal text-uppercase">Nam</span>
+        {%else%}
+        <span class="font-weight-normal text-uppercase">Nữ</span>
+        {%endif%}
+    </li>
+    <li class="list-group-item list-group-item-action"><p class="text-secondary">Ngày Tháng Năm Sinh</p><span
+            class="font-weight-normal text-uppercase">{{current_user.birthday}}</span></li>
 </ul>
 <h4 class="text-info"> Vui Lòng Chọn Lịch Khám Phù Hợp</h4>
 {% if error_msg %}
-    <div class="alert alert-danger">
-        {{error_msg}}
-    </div>
+<div class="alert alert-danger">
+    {{error_msg}}
+</div>
 {% endif %}
-    <form action="{{url_for('dang_ky_kham', user_id = current_user.id)}}" method="post">
-      <div class="form-group">
+<form action="{{url_for('dang_ky_kham', user_id = current_user.id)}}" method="post">
+    <div class="form-group">
         <label for="lichkham">Lịch Khám</label>
 
         <input type="date" name="lichkham" class="form-control" placeholder="Đặt Lịch khám" id="lichkham" required>
-      </div>
-      <button type="submit" class="btn btn-danger">Đăng Ký Khám</button>
-    </form>
-        </br>
-
+    </div>
+    <button type="submit" class="btn btn-danger">Đăng Ký Khám</button>
+</form>
+</br>
 
 
 {% endblock %}

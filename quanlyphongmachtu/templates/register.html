@@ -18,55 +18,56 @@
 {% endif %}
 <form method="post" action="{{ url_for('register')}}" enctype="multipart/form-data">
     <div class="form-group">
-         <label for="firstname"> Ho Và Tên Lót</label>
-        <input type="text" name="firstname" class="form-control" id="firstname" placeholder="Nhập Họ Tên Lót"  required/>
-    </div>
-     <div class="form-group">
-         <label for="lastname"> Tên</label>
-        <input type="text" name="lastname" class="form-control" id="lastname" placeholder="Nhập Tên"  required/>
+        <label for="firstname"> Ho Và Tên Lót</label>
+        <input type="text" name="firstname" class="form-control" id="firstname" placeholder="Nhập Họ Tên Lót" required/>
     </div>
     <div class="form-group">
-         <label for="gender">Giới Tính</label>
+        <label for="lastname"> Tên</label>
+        <input type="text" name="lastname" class="form-control" id="lastname" placeholder="Nhập Tên" required/>
+    </div>
+    <div class="form-group">
+        <label for="gender">Giới Tính</label>
         <select id="gender" name="gender" class="form-control">
             <option value="male">Nam</option>
-             <option value="female">Nữ</option>
+            <option value="female">Nữ</option>
         </select>
     </div>
     <div class="form-group">
-         <label for="avatar"> Ảnh Đại Diện</label>
-        <input type="file" name="avatar" class="form-control" id="avatar"  />
+        <label for="avatar"> Ảnh Đại Diện</label>
+        <input type="file" name="avatar" class="form-control" id="avatar"/>
     </div>
     <div class="form-group">
         <label for="birthday">Ngày Tháng Năm Sinh</label>
-        <input type="date" id="birthday" name="birthday" class="form-control" required />
+        <input type="date" id="birthday" name="birthday" class="form-control" required/>
     </div>
     <div class="form-group">
-          <label for="address_street">Địa chỉ Liên Lạc</label>
-          <input type="text" id="address_street" name="address_street" class="form-control" required />
+        <label for="address_street">Địa chỉ Liên Lạc</label>
+        <input type="text" id="address_street" name="address_street" class="form-control" required/>
     </div>
     <div class="form-group">
-          <label for="user_role">Đăng ký tài khoản với vai trò:</label>
-         <select id="user_role" name="user_role" class="form-control">
+        <label for="user_role">Đăng ký tài khoản với vai trò:</label>
+        <select id="user_role" name="user_role" class="form-control">
             <option value="2">BỆNH NHÂN ĐĂNG KÝ KHÁM</option>
             <option value="3">NHÂN VIÊN Y TÁ</option>
             <option value="4">NHÂN VIÊN BÁC SĨ</option>
         </select>
     </div>
-     <div class="form-group">
-         <label for="username"> Username</label>
-        <input type="text" name="username" class="form-control" id="username" placeholder="Nhap Username" required />
+    <div class="form-group">
+        <label for="username"> Username</label>
+        <input type="text" name="username" class="form-control" id="username" placeholder="Nhap Username" required/>
     </div>
-     <div class="form-group">
-         <label for="password"> Password</label>
-        <input type="password" name="password" class="form-control" id="password" placeholder="Nhap Password" required />
+    <div class="form-group">
+        <label for="password"> Password</label>
+        <input type="password" name="password" class="form-control" id="password" placeholder="Nhap Password" required/>
     </div>
-     <div class="form-group">
-         <label for="confirmPassword"> Confirm Password</label>
-        <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Nhap confirmPassword" required />
+    <div class="form-group">
+        <label for="confirmPassword"> Confirm Password</label>
+        <input type="password" name="confirmPassword" class="form-control" id="confirmPassword"
+               placeholder="Nhap confirmPassword" required/>
     </div>
-      <div class="form-group">
+    <div class="form-group">
 
-        <input type="submit" class="btn btn-danger" value="Đăng Ký" />
+        <input type="submit" class="btn btn-danger" value="Đăng Ký"/>
     </div>
 </form>
 {% endblock %}

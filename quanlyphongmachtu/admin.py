@@ -1,7 +1,8 @@
 from quanlyphongmachtu import admin, db, app
-from quanlyphongmachtu.models import Medicine, UnitMedicine, TienKham, QuyDinhKham, UserInfo, Account, UserRole, PhoneNumber, AddressStreet
+from quanlyphongmachtu.models import Medicine, UnitMedicine, TienKham, QuyDinhKham, UserInfo, Account, UserRole, \
+    PhoneNumber, AddressStreet
 from flask_admin.contrib.sqla import ModelView
-from flask_admin import  BaseView, expose
+from flask_admin import BaseView, expose
 from flask_login import logout_user, current_user
 from flask import redirect
 
@@ -31,16 +32,17 @@ class MedicineView(AuthenticatedUserModelView):
     form_excluded_columns = ['active', 'image']
 
 
-class UnitMedicineView(ModelView):
+class UnitMedicineView(AuthenticatedUserModelView):
     can_view_details = True
     can_export = True
     edit_modal = True
     details_modal = True
     column_searchable_list = ['name']
     column_labels = {
-        'name':'Tên Đơn Vị'
+        'name': 'Tên Đơn Vị'
     }
     form_excluded_columns = ['medicines']
+
 
 # quản trị viên có thể kiểm duyệt tài khoản bác sĩ, y tá
 class UserInfoView(AuthenticatedUserModelView):
@@ -60,22 +62,21 @@ class UserInfoView(AuthenticatedUserModelView):
                              'userinfo_address', 'account', 'khambenhs', 'phones']
 
 
-class TienKhamView(ModelView):
+class TienKhamView(AuthenticatedUserModelView):
     can_create = False
     can_edit = True
     can_delete = False
     column_labels = {
-        'tien_kham':'Tiền Khám'
+        'tien_kham': 'Tiền Khám'
     }
 
 
-
-class QuyDinhKhamView(ModelView):
+class QuyDinhKhamView(AuthenticatedUserModelView):
     can_create = False
     can_edit = True
     can_delete = False
     column_labels = {
-        'so_benhnhan_kham_trongngay':'Quy Định Số Bệnh Nhân Đăng Ký Khám Trong Ngày'
+        'so_benhnhan_kham_trongngay': 'Quy Định Số Bệnh Nhân Đăng Ký Khám Trong Ngày'
     }
     form_excluded_columns = ['khambenhs']
 
@@ -84,9 +85,11 @@ class CheckLogIndUser(BaseView):
     def is_accessible(self):
         return current_user.is_authenticated
 
+
 class CheckUserAuthenticatedAdmin(BaseView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.user_role_id == app.config['ADMIN_ID']
+
 
 class LogOutView(CheckLogIndUser):
     @expose('/')

@@ -3,32 +3,32 @@
 
 {% block body%}
 {% if current_user.is_authenticated %}
-<h1 class="text-info"> QUẢN  TRỊ VIÊN PHÒNG MẠCH TƯ</h1>
-<h3 class="text-success">{{current_user.first_name}} {{ current_user.last_name }}  </h3>
+<h1 class="text-info"> QUẢN TRỊ VIÊN PHÒNG MẠCH TƯ</h1>
+<h3 class="text-success">{{current_user.first_name}} {{ current_user.last_name }} </h3>
 {% else %}
 
- <br/>
-  <h1 class="text-info text-center">ĐĂNG NHẬP QUẢN TRỊ VIÊN</h1>
-    <form action="{{ url_for('admin_login') }}" method="post">
-      <div class="form-group">
+<br/>
+<h1 class="text-info text-center">ĐĂNG NHẬP QUẢN TRỊ VIÊN</h1>
+<form action="{{ url_for('admin_login') }}" method="post">
+    <div class="form-group">
         <label for="username">Username</label>
         <input type="text" class="form-control" placeholder="Enter username" id="username" name="username">
-      </div>
-      <div class="form-group">
+    </div>
+    <div class="form-group">
         <label for="pwd">Password:</label>
         <input type="password" class="form-control" placeholder="Enter password" id="pwd" name="password">
-      </div>
+    </div>
 
-      <button type="submit" class="btn btn-primary">Đăng Nhập</button>
-    </form>
-    </br>
-    <a class="btn btn-info" href="{{ url_for('user_signin')}}">Đăng Nhập Người dùng</a>
+    <button type="submit" class="btn btn-primary">Đăng Nhập</button>
+</form>
+</br>
+<a class="btn btn-info" href="{{ url_for('user_signin')}}">Đăng Nhập Người dùng</a>
 {% endif %}
 {% endblock %}
 
 {%block js%}
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script >
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
 
-  </script>
+</script>
 {% endblock%}
