@@ -67,6 +67,7 @@ def register():
         confirm_password = request.form['confirmPassword']
         user = utils.check_username(username)
         user_role = request.form['user_role']
+        phone = request.form['phone']
         if user:
             error_msg_user = 'Username đã có người sử dụng'
         else:
@@ -77,13 +78,15 @@ def register():
                     res = cloudinary.uploader.upload(file)
                     avatar = res['secure_url']
                 try:
-                    utils.add_user(firstname=firstname, lastname=lastname,
+                    new_user = utils.add_user(firstname=firstname, lastname=lastname,
                                    username=username, password=password,
                                    gender=gender,
                                    birthday=birthday,
                                    address=address,
                                    avatar=avatar,
                                    user_role=user_role)
+                    utils.add_phone(phone, new_user.id)
+
                     return redirect(url_for("user_signin"))
                 except Exception as ex:
                     error_msg = 'Đã có lỗi xảy ra' + str(ex)

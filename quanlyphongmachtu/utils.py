@@ -88,6 +88,7 @@ def add_user(firstname, lastname, username, password, **kwargs):
                            )
     db.session.add(user_account)
     db.session.commit()
+    return user_info
 
 
 def get_listuser():
