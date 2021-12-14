@@ -90,7 +90,8 @@ def add_user(firstname, lastname, username, password, **kwargs):
     db.session.commit()
 
 
-
+def get_listuser():
+    return UserInfo.query.all()
 
 def get_user_by_id(user_id):
     return UserInfo.query.get(user_id)
@@ -138,6 +139,10 @@ def dang_ky_kham_benh_nhan(lichkham, userinfo_id):
     db.session.add(kham_benh)
     db.session.commit()
 
+
+def getlist_patient():
+    list = UserInfo.query.filter(UserInfo.user_role_id.__eq__(int(app.config['PATIENT_ID'])))
+    return list
 
 def xemthongtin_khambenh(user_id):
     thongtin_khambenh = KhamBenh.query.filter(KhamBenh.user_info_id.__eq__(user_id))

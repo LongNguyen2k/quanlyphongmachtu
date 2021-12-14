@@ -131,12 +131,28 @@ def dang_ky_kham(user_id):
                            error_msg=error_msg, account=account, phones=phones, address=address)
 
 
-@app.route("/ytadangkykham/<int:nurse_id>", methods=['get', 'post'])
+@app.route("/ytadangkykham/", methods=['get', 'post'])
 @login_required
-def dangkykham_yta(nurse_id):
-    return render_template('dangkykhamyta.html')
+def dangkykham_yta():
+    list_user = utils.getlist_patient()
+    error_msg = None
+    if request.method == 'POST':
+        userinfo_id = request.form.get("benhnhan")
+        surgery_schedule = request.form.get("lichkham")
+        if utils.check_schedule(surgery_schedule):
+            try:
+                utils.dang_ky_kham_benh_nhan(surgery_schedule, userinfo_id=userinfo_id)
+                return redirect(url_for('xemdanhsach_khambenh'))
+            except Exception as ex:
+                error_msg = "Đã có lỗi xảy ra trong quá trình thực hiện! Chi tiết lỗi: "+ str(ex)
+        else:
+            error_msg = "Đặt Lịch Khám Không Phù Hợp"
+    return render_template('dangkykhamyta.html', list_user=list_user, error_msg=error_msg)
 
 
+@app.route("/xemdanhsach", methods=['get'])
+def xemdanhsach_khambenh():
+    return render_template("xemdanhsachkhambenh.html")
 
 
 @app.route("/xemthongtinkham/<int:user_id>", methods=['get'])

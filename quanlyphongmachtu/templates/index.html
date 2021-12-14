@@ -53,13 +53,13 @@
     <span class="text-info font-weight-bold">ĐĂNG KÝ KHÁM CHO BỆNH NHÂN</span>
     <br>
     <div class="row">
-    <a href="{{url_for('dangkykham_yta', nurse_id = current_user.id)}}"  class="btn btn-info">Đăng Ký Khám Cho Bệnh Nhân</a>
+    <a href="{{url_for('dangkykham_yta')}}"  class="btn btn-info">Đăng Ký Khám Cho Bệnh Nhân</a>
     </div>
     <br>
     <span class="text-success font-weight-bold">Xem DANH SÁCH KHÁM BỆNH</span>
     <br>
     <div class="row">
-    <a class="btn btn-success " href="{{url_for('xemthongtin_khambenh', user_id=current_user.id)}}">Xem Danh Sách Khám Bệnh</a>
+    <a class="btn btn-success " href="{{url_for('xemdanhsach_khambenh')}}">Xem Danh Sách Khám Bệnh</a>
     </div>
 {%endif%}
 {%if (current_user.user_role_id == 3 or current_user.user_role_id == 4) and current_user.active == False %}

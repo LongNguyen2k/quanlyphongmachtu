@@ -5,9 +5,32 @@
 
 {%block content%}
 </br>
-<h2 class="text-danger text-center" xmlns="http://www.w3.org/1999/html">ĐĂNG KÝ KHÁM BỆNH CHO NGƯỜI BỆNH</h2>
-<h3 class="text-info"> Thông Tin Đăng Ký Khám </h3>
 
+<h2 class="text-danger text-center" xmlns="http://www.w3.org/1999/html">ĐĂNG KÝ KHÁM BỆNH CHO BỆNH NHÂN</h2>
+<form action="{{url_for('dangkykham_yta')}}" method="post">
+    <h4>Thông Tin Bệnh Nhân Đăng Ký Khám</h4>
+    <div class="form-group">
+        <label for="benhnhan">Chọn Bệnh Nhân Đăng Ký Khám</label>
+        <select class="selectpicker form-control" id="benhnhan" data-live-search="true" name="benhnhan">
+        {% for u in list_user%}
+            <option data-tokens="{{u.last_name}}" value="{{u.id}}">{{u.first_name}} {{u.last_name}}</option>
+        {%endfor%}
+        </select>
+    </div>
+     <h4>Đặt Lịch Khám Cho Bệnh Nhân</h4>
+    <div class="form-group">
+        <label for="lichkham">Lịch Khám</label>
+        <input type="date" name="lichkham" class="form-control" placeholder="Đặt Lịch khám" id="lichkham" required>
+    </div>
+    {% if error_msg %}
+    <div class="alert alert-danger">
+        {{error_msg}}
+    </div>
+    {% endif %}
+    <button type="submit" class="btn btn-danger">Đăng Ký Khám</button>
+</form>
 
+<script>
 
+</script>
 {% endblock %}
