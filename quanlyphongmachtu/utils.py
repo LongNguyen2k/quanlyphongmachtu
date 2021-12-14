@@ -58,15 +58,28 @@ def add_user(firstname, lastname, username, password, **kwargs):
     address_user = AddressStreet(address_street=kwargs.get('address'))
     db.session.add(address_user)
     db.session.commit()
+    user_role = int(kwargs.get('user_role'))
+    if user_role == 2:
+        user_info = UserInfo(first_name=firstname.strip(),
+                             last_name=lastname.strip(),
+                             gender=kwargs.get('gender'),
+                             avatar=kwargs.get('avatar'),
+                             birthday=kwargs.get('birthday'),
+                             active=True,
+                             address_id=address_user.id,
+                             user_role_id=user_role,
+                             )
+    else:
+        if user_role == 3 or user_role == 4:
+            user_info = UserInfo(first_name=firstname.strip(),
+                                 last_name=lastname.strip(),
+                                 gender=kwargs.get('gender'),
+                                 avatar=kwargs.get('avatar'),
+                                 birthday=kwargs.get('birthday'),
+                                 address_id=address_user.id,
+                                 user_role_id=user_role,
+                                 )
 
-    user_info = UserInfo(first_name=firstname.strip(),
-                         last_name=lastname.strip(),
-                         gender=kwargs.get('gender'),
-                         avatar=kwargs.get('avatar'),
-                         birthday=kwargs.get('birthday'),
-                         address_id=address_user.id,
-                         user_role_id=app.config['PATIENT_ID'],
-                         )
     db.session.add(user_info)
     db.session.commit()
     user_account = Account(userinfo_id=user_info.id,
@@ -75,6 +88,8 @@ def add_user(firstname, lastname, username, password, **kwargs):
                            )
     db.session.add(user_account)
     db.session.commit()
+
+
 
 
 def get_user_by_id(user_id):

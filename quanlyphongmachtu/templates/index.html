@@ -9,6 +9,7 @@
 <body>
     {% block content %}
      {% if current_user.is_authenticated %}
+        {% if current_user.user_role_id == 2 %}
         <h1 class="text-info text-center">CHÀO MỪNG ĐẾN PHÒNG KHÁM</h1>
         <h3 class="text-success text-center">{{current_user.first_name}} {{ current_user.last_name }}  </h3>
         <span  class=" text-info font-weight-bold" >CHỌN ĐĂNG KÝ KHÁM ĐỂ ĐẶT LỊCH KHÁM Ở PHÒNG MẠCH</span>
@@ -36,8 +37,9 @@
                     <div class="row">
                         <a  class="btn btn-success" href="{{url_for('xemthongtin_khambenh', user_id=current_user.id)}}">Xem thông tin Khám Bệnh</a>
                     </div>
-
             {% endif %}
+
+        {% endif %}
 
     {% else %}
         <h1 class="subject text-center text-danger">

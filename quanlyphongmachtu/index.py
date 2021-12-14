@@ -66,6 +66,7 @@ def register():
             password = request.form['password']
             confirm_password = request.form['confirmPassword']
             user = utils.check_username(username)
+            user_role = request.form['user_role']
             if user:
                 error_msg_user = 'Username đã có người sử dụng'
             else:
@@ -81,7 +82,8 @@ def register():
                                           gender=gender,
                                           birthday=birthday,
                                           address=address,
-                                          avatar=avatar)
+                                          avatar=avatar,
+                                          user_role=user_role)
                         return redirect(url_for("user_signin"))
                     except Exception as ex:
                         error_msg = 'Đã có lỗi xảy ra' + str(ex)

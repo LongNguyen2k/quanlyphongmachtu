@@ -52,6 +52,7 @@ class UserInfo(BaseModel, UserMixin):
     avatar = Column(String(255))
     gender = Column(String(10), default='male')
     birthday = Column(Date, nullable=False)
+    active = Column(Boolean, default=False)
     phones = relationship('PhoneNumber', backref='phonennumber', lazy=True)
     account = relationship('Account', backref='userinfo_account', uselist=False, lazy=False)
     address_id = Column(Integer, ForeignKey('address_street.id'), nullable=False)
