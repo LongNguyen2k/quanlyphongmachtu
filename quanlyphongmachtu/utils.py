@@ -1,8 +1,9 @@
-import hashlib
+
 from datetime import datetime
 from datetime import date
 from quanlyphongmachtu import app, db
 from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber, KhamBenh, QuyDinhKham
+from sqlalchemy.sql import extract, func
 import hashlib
 
 
@@ -94,6 +95,7 @@ def add_user(firstname, lastname, username, password, **kwargs):
 def get_listuser():
     return UserInfo.query.all()
 
+
 def get_user_by_id(user_id):
     return UserInfo.query.get(user_id)
 
@@ -124,7 +126,7 @@ def check_schedule(surgery_schedule):
     surgery_schedule = datetime.strptime(surgery_schedule, "%Y-%m-%d")
     # kiểm tra ngày đặt lịch khám có phải ngày hôm nay không
     if surgery_schedule.day == datetime.now().day \
-        and surgery_schedule.month == datetime.now().month and \
+            and surgery_schedule.month == datetime.now().month and \
             surgery_schedule.year == datetime.now().year:
         return True
     else:
@@ -145,6 +147,45 @@ def getlist_patient():
     list = UserInfo.query.filter(UserInfo.user_role_id.__eq__(int(app.config['PATIENT_ID'])))
     return list
 
+
 def xemthongtin_khambenh(user_id):
     thongtin_khambenh = KhamBenh.query.filter(KhamBenh.user_info_id.__eq__(user_id))
     return thongtin_khambenh
+
+
+def getlist_khambenh():
+    current_date = datetime.now()
+    # list_khambenh = KhamBenh.query.filter(KhamBenh.lich_khambenh.day.__eq__(current_date.day),
+    #                                       KhamBenh.lich_khambenh.month.__eq__(current_date.month),
+    #                                       KhamBenh.lich_khambenh.year.__eq__(current_date.year))
+    # list_query = db.session.query(UserInfo, AddressStreet, KhamBenh.user_info_id == UserInfo.id,
+    #                                  AddressStreet.id == UserInfo.address_id)\
+    #                            .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
+    #                                    extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
+    #                                    extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year),
+    #                                    KhamBenh.trangthai_hoantatthutuc.__eq__(False))\
+    #                            .add_columns(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
+    #                                         UserInfo.birthday, UserInfo.phones, AddressStreet.address_street,
+    #                                         AddressStreet.city, AddressStreet.country).all()
+    # list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
+    #                               UserInfo.birthday, UserInfo.phones, AddressStreet.address_street,
+    #                               AddressStreet.city, AddressStreet.country) \
+    #     .join(KhamBenh, KhamBenh.user_info_id == UserInfo.id) \
+    #     .join(UserInfo, UserInfo.address_id == AddressStreet.id) \
+    #     .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
+    #             extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
+    #             extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year),
+    #             KhamBenh.trangthai_hoantatthutuc.__eq__(False)).all()
+    # .join(UserInfo, UserInfo.id == KhamBenh.user_info_id, isouter=False) \
+    #     .join(UserInfo, UserInfo.address_id == AddressStreet.id) \
+    list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
+                                   UserInfo.birthday, AddressStreet.address_street, AddressStreet.city, AddressStreet.country, PhoneNumber.number_phone)\
+                            .select_from(UserInfo)\
+                            .join(KhamBenh)\
+                           .join(AddressStreet)\
+                            .join(PhoneNumber)\
+                            .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
+                                   extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
+                                   extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year),
+                                   KhamBenh.trangthai_hoantatthutuc.__eq__(False)).all()
+    return list_query

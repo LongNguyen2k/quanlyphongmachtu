@@ -3,8 +3,35 @@
 
 {%block content%}
 </br>
-
-<h3 class="text-info"> Thông Tin Đăng Ký Khám Bệnh</h3>
-
+<div class="border border-dark">
+<h3 class="text-danger text-center ">DANH SÁCH ĐĂNG KÝ KHÁM</h3>
+<div class="border-top border-dark">
+<h5 class="font-weight-bold text-center">Ngày Khám:{{ngaykham_homnay}}</h5>
+</div>
+</div>
+<table class="table table-hover table-bordered border">
+    <thead>
+      <tr>
+        <th>Số Thứ Tự</th>
+        <th>Họ Tên</th>
+        <th>Giới Tính</th>
+        <th>Năm Sinh</th>
+        <th>Địa Chỉ</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for list in list_khambenh %}
+      <tr>
+        <td>{{list[0]}}</td>
+        <td>{{list[1]}} {{list[2]}}</td>
+        <td>{{list[3]}}</td>
+        <td>{{list[4]}}</td>
+        <td>{{list[5]}} {{ list[6] }} {{ list[7] }}</td>
+      </tr>
+     {% endfor %}
+    </tbody>
+  </table>
+<br>
+<a class="btn btn-danger" href="">HOÀN TẤT DANH SÁCH KHÁM</a>
 
 {% endblock%}

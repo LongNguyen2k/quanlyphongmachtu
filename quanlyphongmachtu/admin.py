@@ -81,7 +81,7 @@ class QuyDinhKhamView(AuthenticatedUserModelView):
     form_excluded_columns = ['khambenhs']
 
 
-class CheckLogIndUser(BaseView):
+class CheckLogInUser(BaseView):
     def is_accessible(self):
         return current_user.is_authenticated
 
@@ -91,7 +91,7 @@ class CheckUserAuthenticatedAdmin(BaseView):
         return current_user.is_authenticated and current_user.user_role_id == app.config['ADMIN_ID']
 
 
-class LogOutView(CheckLogIndUser):
+class LogOutView(CheckLogInUser):
     @expose('/')
     def index(self):
         logout_user()

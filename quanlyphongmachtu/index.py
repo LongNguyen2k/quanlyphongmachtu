@@ -5,6 +5,7 @@ import utils
 from quanlyphongmachtu.admin import *
 from flask_login import login_user, logout_user, current_user, login_required
 import cloudinary.uploader
+from datetime import date
 
 
 @app.route("/")
@@ -155,7 +156,9 @@ def dangkykham_yta():
 
 @app.route("/xemdanhsach", methods=['get'])
 def xemdanhsach_khambenh():
-    return render_template("xemdanhsachkhambenh.html")
+    list_khambenh = utils.getlist_khambenh()
+    ngaykham_homnay = date.today()
+    return render_template("xemdanhsachkhambenh.html", list_khambenh=list_khambenh, ngaykham_homnay=ngaykham_homnay)
 
 
 @app.route("/xemthongtinkham/<int:user_id>", methods=['get'])

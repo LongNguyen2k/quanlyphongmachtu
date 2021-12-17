@@ -53,7 +53,7 @@ class UserInfo(BaseModel, UserMixin):
     gender = Column(String(10), default='male')
     birthday = Column(Date, nullable=False)
     active = Column(Boolean, default=False)
-    phones = relationship('PhoneNumber', backref='phonennumber', lazy=True)
+    phones = relationship('PhoneNumber', backref='phonennumber', lazy='joined')
     account = relationship('Account', backref='userinfo_account', uselist=False, lazy=False)
     address_id = Column(Integer, ForeignKey('address_street.id'), nullable=False)
     user_role_id = Column(Integer, ForeignKey('user_role.id'), nullable=False)
