@@ -3,6 +3,7 @@
 
 {%block content%}
 </br>
+{% if current_user.user_role_id == 3 and current_user.active == True %}
 <div class="border border-dark">
 <h3 class="text-danger text-center ">DANH SÁCH ĐĂNG KÝ KHÁM</h3>
 <div class="border-top border-dark">
@@ -30,6 +31,7 @@
         <td>NAM</td>
          {%else%}
         <td>NỮ</td>
+          {%endif%}
         <td>{{list[4]}}</td>
         <td>{{list[5]}} {{ list[6] }} {{ list[7] }}</td>
         <td>{{list[8]}}</td>
@@ -58,7 +60,9 @@
 </div>
 {% endif %}
 
-
+{%else%}
+    <h1 class="text-danger text-center"> BẠN KHÔNG CÓ QUYỀN HẠN ĐỂ TRUY CẬP TRANG NÀY</h1>
+{%endif%}
 
 
 {% endblock%}

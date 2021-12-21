@@ -195,9 +195,12 @@ def xemthongtin_khambenh(user_id):
 
 
 @app.route("/xemdanhsachkhambenh_bacsi", methods=['get', 'post'])
+@login_required
 def xemdanhsach_khambenh_bacsi():
-    listkhambenh = utils.getlist_khambenhbacsi()
-    return render_template("xemdanhsachkhambenhbacsi.html", khambenh=listkhambenh)
+    dateInput = request.args.get("dateInput")
+    ngaykham_homnay = date.today()
+    listkhambenh = utils.getlist_khambenhbacsi(dateInput=dateInput)
+    return render_template("xemdanhsachkhambenhbacsi.html", khambenh=listkhambenh, dateInput=dateInput, ngaykham_homnay=ngaykham_homnay)
 
 
 @app.route("/add-phone", methods=['post'])

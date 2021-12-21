@@ -5,6 +5,7 @@
 
 {%block content%}
 </br>
+{% if current_user.user_role_id == 3 and current_user.active == True %}
 
 <h2 class="text-danger text-center" xmlns="http://www.w3.org/1999/html">ĐĂNG KÝ KHÁM BỆNH CHO BỆNH NHÂN</h2>
 <form action="{{url_for('dangkykham_yta')}}" method="post">
@@ -29,6 +30,10 @@
     {% endif %}
     <button type="submit" class="btn btn-danger">Đăng Ký Khám</button>
 </form>
+
+{%else%}
+    <h1 class="text-danger text-center"> BẠN KHÔNG CÓ QUYỀN HẠN ĐỂ TRUY CẬP TRANG NÀY</h1>
+{%endif%}
 
 <script>
 

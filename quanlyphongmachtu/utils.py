@@ -154,9 +154,10 @@ def check_quydinh(surgery_schedule):
 
 def count_patient(surgery_schedule):
     surgery_schedule = datetime.strptime(surgery_schedule, "%Y-%m-%d")
-    list_khambenh = db.session.query(func.count(KhamBenh.id)).filter(extract('day', KhamBenh.lich_khambenh).__eq__(surgery_schedule.day),
-                extract('month', KhamBenh.lich_khambenh).__eq__(surgery_schedule.month),
-                extract('year', KhamBenh.lich_khambenh).__eq__(surgery_schedule.year)).first()
+    list_khambenh = db.session.query(func.count(KhamBenh.id)).filter(
+        extract('day', KhamBenh.lich_khambenh).__eq__(surgery_schedule.day),
+        extract('month', KhamBenh.lich_khambenh).__eq__(surgery_schedule.month),
+        extract('year', KhamBenh.lich_khambenh).__eq__(surgery_schedule.year)).first()
     return list_khambenh[0]
 
 
@@ -186,18 +187,34 @@ def getlist_khambenh():
     return list_query
 
 
-def getlist_khambenhbacsi():
-    current_date = datetime.now()
-    list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
-                                  UserInfo.birthday, AddressStreet.address_street, AddressStreet.city,
-                                  AddressStreet.country, PhoneNumber.number_phone, KhamBenh.trangthai_hoantatthutuc, KhamBenh.trangthai_khambenh) \
-        .select_from(UserInfo) \
-        .join(KhamBenh) \
-        .join(AddressStreet) \
-        .join(PhoneNumber) \
-        .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
-                extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
-                extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year)).all()
+def getlist_khambenhbacsi(dateInput=None):
+    if dateInput:
+        dateInput = datetime.strptime(dateInput, "%Y-%m-%d")
+        list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
+                                      UserInfo.birthday, AddressStreet.address_street, AddressStreet.city,
+                                      AddressStreet.country, PhoneNumber.number_phone, KhamBenh.trangthai_hoantatthutuc,
+                                      KhamBenh.trangthai_khambenh) \
+            .select_from(UserInfo) \
+            .join(KhamBenh) \
+            .join(AddressStreet) \
+            .join(PhoneNumber) \
+            .filter(extract('day', KhamBenh.lich_khambenh).__eq__(dateInput.day),
+                    extract('month', KhamBenh.lich_khambenh).__eq__(dateInput.month),
+                    extract('year', KhamBenh.lich_khambenh).__eq__(dateInput.year)).all()
+        return list_query
+    else:
+        current_date = datetime.now()
+        list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
+                                      UserInfo.birthday, AddressStreet.address_street, AddressStreet.city,
+                                      AddressStreet.country, PhoneNumber.number_phone, KhamBenh.trangthai_hoantatthutuc,
+                                      KhamBenh.trangthai_khambenh) \
+            .select_from(UserInfo) \
+            .join(KhamBenh) \
+            .join(AddressStreet) \
+            .join(PhoneNumber) \
+            .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
+                    extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
+                    extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year)).all()
     return list_query
 
 
@@ -214,8 +231,10 @@ def sendsms_forpatient(patient_phonenumber, **kwargs):
     patient.messages.create(
         body="Thông Tin Đăng Ký Khám \n "
              "Số thứ tự Đăng Ký Khám: " + str(kwargs.get("numberial_order")) + "\n"
-             "Lịch Khám:" + "Ngày:" + str(kwargs.get("day")) + "\nTháng:" + str(kwargs.get("month")) + "\nNăm:" + str(kwargs.get("year")) +"\n"
-             "Họ Và Tên: " + str(kwargs.get("firstname")) + " " + str(kwargs.get("lastname")),
+                                                                               "Lịch Khám:" + "Ngày:" + str(
+            kwargs.get("day")) + "\nTháng:" + str(kwargs.get("month")) + "\nNăm:" + str(kwargs.get("year")) + "\n"
+                                                                                                              "Họ Và Tên: " + str(
+            kwargs.get("firstname")) + " " + str(kwargs.get("lastname")),
         from_=app.config['DefaultTwillioPhone'],
         to=string_convert
     )
@@ -235,9 +254,6 @@ def util_hoantat_danhsachkham():
                            lastname=l[2],
                            numberial_order=l[0])
         hoantat_thutuc(l[0])
-
-
-
 
 
 def hoantat_thutuc(khambenh_id):

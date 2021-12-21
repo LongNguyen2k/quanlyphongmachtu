@@ -3,14 +3,24 @@
 
 {%block content%}
 </br>
+
+{% if current_user.user_role_id == 4 and current_user.active == True %}
+
 <div class="border border-dark" xmlns="http://www.w3.org/1999/html">
     <h3 class="text-danger text-center ">DANH SÁCH ĐĂNG KÝ KHÁM</h3>
+    <div class="border-top border-dark">
+        {%if dateInput%}
+        <h5 class="font-weight-bold text-center">Ngày Khám: {{dateInput}}</h5>
+        {%else%}
+         <h5 class="font-weight-bold text-center">Ngày Khám: {{ngaykham_homnay}}</h5>
+        {%endif%}
+    </div>
     <div class="border-top border-dark">
         <br>
     <form>
         <div class="form-group">
-             <label class="text-danger font-weight-bold" for="kw">Nhập Ngày Cần Tìm Kiếm</label>
-            <input type="date" class="form-control" name="kw" id="kw"/>
+             <label class="text-danger font-weight-bold" for="dateInput">Nhập Ngày Cần Tìm Kiếm</label>
+            <input type="date" class="form-control" name="dateInput" id="dateInput"/>
         </div>
         <input type="submit" value="Tìm Kiếm Theo Ngày" class="btn btn-danger"/>
         </br>
@@ -65,18 +75,10 @@
 {%endif%}
 <br>
 
+{%else%}
+<h1 class="text-danger text-center"> BẠN KHÔNG CÓ QUYỀN HẠN ĐỂ TRUY CẬP TRANG NÀY</h1>
 
-{% if error_msg %}
-<div class="alert alert-danger">
-    {{error_msg}}
-</div>
-{% endif %}
-
-{% if message_success %}
-<div class="alert alert-success">
-    {{message_success}}
-</div>
-{% endif %}
+{%endif%}
 
 
 {% endblock%}
