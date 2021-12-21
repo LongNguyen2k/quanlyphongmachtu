@@ -1,10 +1,11 @@
-
 from datetime import datetime
 from datetime import date
 from quanlyphongmachtu import app, db
 from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber, KhamBenh, QuyDinhKham
 from sqlalchemy.sql import extract, func
+from twilio.rest import Client
 import hashlib
+import os
 
 
 def check_admin_login(username, password):
@@ -143,6 +144,22 @@ def dang_ky_kham_benh_nhan(lichkham, userinfo_id):
     db.session.commit()
 
 
+def check_quydinh(surgery_schedule):
+    # check quy định khám theo ngày nhập vào nếu như ngày hôm đó hết chỗ thì báo lỗi
+    quydinh_kham = QuyDinhKham.query.get(app.config['QuyDinhKham'])
+    if int(count_patient(surgery_schedule)).__ge__(int(quydinh_kham.so_benhnhan_kham_trongngay)):
+        return False
+    return True
+
+
+def count_patient(surgery_schedule):
+    surgery_schedule = datetime.strptime(surgery_schedule, "%Y-%m-%d")
+    list_khambenh = db.session.query(func.count(KhamBenh.id)).filter(extract('day', KhamBenh.lich_khambenh).__eq__(surgery_schedule.day),
+                extract('month', KhamBenh.lich_khambenh).__eq__(surgery_schedule.month),
+                extract('year', KhamBenh.lich_khambenh).__eq__(surgery_schedule.year)).first()
+    return list_khambenh[0]
+
+
 def getlist_patient():
     list = UserInfo.query.filter(UserInfo.user_role_id.__eq__(int(app.config['PATIENT_ID'])))
     return list
@@ -155,37 +172,60 @@ def xemthongtin_khambenh(user_id):
 
 def getlist_khambenh():
     current_date = datetime.now()
-    # list_khambenh = KhamBenh.query.filter(KhamBenh.lich_khambenh.day.__eq__(current_date.day),
-    #                                       KhamBenh.lich_khambenh.month.__eq__(current_date.month),
-    #                                       KhamBenh.lich_khambenh.year.__eq__(current_date.year))
-    # list_query = db.session.query(UserInfo, AddressStreet, KhamBenh.user_info_id == UserInfo.id,
-    #                                  AddressStreet.id == UserInfo.address_id)\
-    #                            .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
-    #                                    extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
-    #                                    extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year),
-    #                                    KhamBenh.trangthai_hoantatthutuc.__eq__(False))\
-    #                            .add_columns(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
-    #                                         UserInfo.birthday, UserInfo.phones, AddressStreet.address_street,
-    #                                         AddressStreet.city, AddressStreet.country).all()
-    # list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
-    #                               UserInfo.birthday, UserInfo.phones, AddressStreet.address_street,
-    #                               AddressStreet.city, AddressStreet.country) \
-    #     .join(KhamBenh, KhamBenh.user_info_id == UserInfo.id) \
-    #     .join(UserInfo, UserInfo.address_id == AddressStreet.id) \
-    #     .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
-    #             extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
-    #             extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year),
-    #             KhamBenh.trangthai_hoantatthutuc.__eq__(False)).all()
-    # .join(UserInfo, UserInfo.id == KhamBenh.user_info_id, isouter=False) \
-    #     .join(UserInfo, UserInfo.address_id == AddressStreet.id) \
     list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
-                                   UserInfo.birthday, AddressStreet.address_street, AddressStreet.city, AddressStreet.country, PhoneNumber.number_phone)\
-                            .select_from(UserInfo)\
-                            .join(KhamBenh)\
-                           .join(AddressStreet)\
-                            .join(PhoneNumber)\
-                            .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
-                                   extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
-                                   extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year),
-                                   KhamBenh.trangthai_hoantatthutuc.__eq__(False)).all()
+                                  UserInfo.birthday, AddressStreet.address_street, AddressStreet.city,
+                                  AddressStreet.country, PhoneNumber.number_phone) \
+        .select_from(UserInfo) \
+        .join(KhamBenh) \
+        .join(AddressStreet) \
+        .join(PhoneNumber) \
+        .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
+                extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
+                extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year),
+                KhamBenh.trangthai_hoantatthutuc.__eq__(False)).all()
     return list_query
+
+
+def sendsms_forpatient(patient_phonenumber, **kwargs):
+    # xử lý số điện thoại truyền vào
+    country_code = "+84"
+    list_convert = list(patient_phonenumber)
+    list_convert[0] = country_code
+    string_convert = "".join(list_convert)
+    # replace()
+    account_sid = app.config['Twillio_account_sid']
+    auth_token = app.config['Twillio_auth_token']
+    patient = Client(account_sid, auth_token)
+    patient.messages.create(
+        body="Thông Tin Đăng Ký Khám \n "
+             "Số thứ tự Đăng Ký Khám: " + str(kwargs.get("numberial_order")) + "\n"
+             "Lịch Khám:" + "Ngày:" + str(kwargs.get("day")) + "\nTháng:" + str(kwargs.get("month")) + "\nNăm:" + str(kwargs.get("year")) +"\n"
+             "Họ Và Tên: " + str(kwargs.get("firstname")) + " " + str(kwargs.get("lastname")),
+        from_=app.config['DefaultTwillioPhone'],
+        to=string_convert
+    )
+
+
+def util_hoantat_danhsachkham():
+    current_date = datetime.now()
+    list_patient = getlist_khambenh()
+    smstry = None
+    # tiến hành lấy từng đối tượng ra chuyển trạng thái hoàn tất thủ tục thành true
+    for l in list_patient:
+        sendsms_forpatient(patient_phonenumber=str(l[8]),
+                           day=current_date.day,
+                           month=current_date.month,
+                           year=current_date.year,
+                           firstname=l[1],
+                           lastname=l[2],
+                           numberial_order=l[0])
+        hoantat_thutuc(l[0])
+
+
+
+
+
+def hoantat_thutuc(khambenh_id):
+    user_khambenh = KhamBenh.query.get(khambenh_id)
+    user_khambenh.trangthai_hoantatthutuc = True
+    db.session.commit()

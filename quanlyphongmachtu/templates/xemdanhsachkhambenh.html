@@ -9,7 +9,8 @@
 <h5 class="font-weight-bold text-center">Ngày Khám:{{ngaykham_homnay}}</h5>
 </div>
 </div>
-<table class="table table-hover table-bordered border">
+{% if khambenh %}
+    <table class="table table-hover table-bordered border">
     <thead>
       <tr>
         <th>Số Thứ Tự</th>
@@ -17,21 +18,44 @@
         <th>Giới Tính</th>
         <th>Năm Sinh</th>
         <th>Địa Chỉ</th>
+        <th>Số Điện Thoại</th>
       </tr>
     </thead>
     <tbody>
-      {% for list in list_khambenh %}
+      {% for list in khambenh %}
       <tr>
         <td>{{list[0]}}</td>
         <td>{{list[1]}} {{list[2]}}</td>
         <td>{{list[3]}}</td>
         <td>{{list[4]}}</td>
         <td>{{list[5]}} {{ list[6] }} {{ list[7] }}</td>
+        <td>{{list[8]}}</td>
       </tr>
      {% endfor %}
     </tbody>
   </table>
+
+{%else%}
+    <h3> Chưa có ai đăng ký khám</h3>
+{%endif%}
 <br>
-<a class="btn btn-danger" href="">HOÀN TẤT DANH SÁCH KHÁM</a>
+<form method="post" action="{{ url_for('xemdanhsach_khambenh')}}">
+    <input type="submit" class="btn btn-danger" value="HOÀN TẤT DANH SÁCH KHÁM"></input>
+</form>
+
+{% if error_msg %}
+<div class="alert alert-danger">
+    {{error_msg}}
+</div>
+{% endif %}
+
+{% if message_success %}
+<div class="alert alert-success">
+    {{message_success}}
+</div>
+{% endif %}
+
+
+
 
 {% endblock%}

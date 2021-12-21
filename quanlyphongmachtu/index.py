@@ -80,12 +80,12 @@ def register():
                     avatar = res['secure_url']
                 try:
                     new_user = utils.add_user(firstname=firstname, lastname=lastname,
-                                   username=username, password=password,
-                                   gender=gender,
-                                   birthday=birthday,
-                                   address=address,
-                                   avatar=avatar,
-                                   user_role=user_role)
+                                              username=username, password=password,
+                                              gender=gender,
+                                              birthday=birthday,
+                                              address=address,
+                                              avatar=avatar,
+                                              user_role=user_role)
                     utils.add_phone(phone, new_user.id)
 
                     return redirect(url_for("user_signin"))
@@ -124,11 +124,14 @@ def dang_ky_kham(user_id):
     if request.method == 'POST':
         surgery_schedule = request.form.get("lichkham")
         if utils.check_schedule(surgery_schedule):
-            try:
-                utils.dang_ky_kham_benh_nhan(surgery_schedule, userinfo_id=user_id)
-                return redirect(url_for('xemthongtin_khambenh', user_id=user_id))
-            except Exception as ex:
-                error_msg = 'Đã có lỗi xảy ra' + str(ex)
+            if utils.check_quydinh(surgery_schedule).__eq__(True):
+                try:
+                    utils.dang_ky_kham_benh_nhan(surgery_schedule, userinfo_id=user_id)
+                    return redirect(url_for('xemthongtin_khambenh', user_id=user_id))
+                except Exception as ex:
+                    error_msg = 'Đã có lỗi xảy ra' + str(ex)
+            else:
+                error_msg = "Số bệnh nhân đã đạt mức tối đa xin vui lòng đăng ký khám vào ngày khác!"
         else:
             error_msg = "Đặt Lịch Khám Không Phù Hợp"
     return render_template('dangkykham.html',
@@ -144,21 +147,37 @@ def dangkykham_yta():
         userinfo_id = request.form.get("benhnhan")
         surgery_schedule = request.form.get("lichkham")
         if utils.check_schedule(surgery_schedule):
-            try:
-                utils.dang_ky_kham_benh_nhan(surgery_schedule, userinfo_id=userinfo_id)
-                return redirect(url_for('xemdanhsach_khambenh'))
-            except Exception as ex:
-                error_msg = "Đã có lỗi xảy ra trong quá trình thực hiện! Chi tiết lỗi: "+ str(ex)
+            if utils.check_quydinh(surgery_schedule).__eq__(True):
+                try:
+                    utils.dang_ky_kham_benh_nhan(surgery_schedule, userinfo_id=userinfo_id)
+                    return redirect(url_for('xemdanhsach_khambenh'))
+                except Exception as ex:
+                    error_msg = "Đã có lỗi xảy ra trong quá trình thực hiện! Chi tiết lỗi: " + str(ex)
+            else:
+                error_msg = "Số bệnh nhân đã đạt mức tối đa xin vui lòng đăng ký khám vào ngày khác!"
         else:
             error_msg = "Đặt Lịch Khám Không Phù Hợp"
+
     return render_template('dangkykhamyta.html', list_user=list_user, error_msg=error_msg)
 
 
-@app.route("/xemdanhsach", methods=['get'])
+@app.route("/xemdanhsach", methods=['get', 'post'])
+@login_required
 def xemdanhsach_khambenh():
+    error_msg = None
     list_khambenh = utils.getlist_khambenh()
     ngaykham_homnay = date.today()
-    return render_template("xemdanhsachkhambenh.html", list_khambenh=list_khambenh, ngaykham_homnay=ngaykham_homnay)
+    if request.method == 'POST':
+        try:
+            utils.util_hoantat_danhsachkham()
+            message_success = "Hoàn Tất Danh Sách Khám Bệnh!"
+            return render_template("xemdanhsachkhambenh.html", ngaykham_homnay=date.today(),
+                                   message_success=message_success)
+        except Exception as ex:
+            error_msg = "Đã có lỗi trong quá trình hoàn tất danh sách khám!\n" \
+                        "Chi tiết lỗi: " + str(ex)
+    return render_template("xemdanhsachkhambenh.html", khambenh=list_khambenh, error_msg=error_msg,
+                           ngaykham_homnay=ngaykham_homnay)
 
 
 @app.route("/xemthongtinkham/<int:user_id>", methods=['get'])
