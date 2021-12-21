@@ -67,6 +67,22 @@
     <h1 class="text-danger"> Tài Khoản Đang Được Phê Duyệt Bởi Quản Trị Viên!</h1>
     <h3 class="text-danger">Nhân Viên Vui Lòng Quay Lại Sau.</h3>
 {%endif%}
+
+{% if current_user.user_role_id == 4 and current_user.active == True %}
+
+
+     <br>
+    <h1 class="text-info text-center">CHÀO MỪNG Bác Sĩ ĐẾN PHÒNG KHÁM</h1>
+    <h2 class="text-success text-center">{{current_user.first_name}} {{ current_user.last_name }} </h2>
+    <span class="text-info font-weight-bold">Vui lòng chọn chức năng cần tương tác</span>
+    <br>
+<div class="row">
+    <a class="btn btn-success " href="{{url_for('xemdanhsach_khambenh_bacsi')}}">Xem Danh Sách Khám Bệnh</a>
+</div>
+
+
+{% endif %}
+
 {% endblock %}
 
 </body>

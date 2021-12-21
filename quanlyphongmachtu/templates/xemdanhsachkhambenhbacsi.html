@@ -1,0 +1,82 @@
+{%extends 'layout/base.html'%}
+{% block title%}Xem DANH SÁCH KHÁM BỆNH{% endblock%}
+
+{%block content%}
+</br>
+<div class="border border-dark" xmlns="http://www.w3.org/1999/html">
+    <h3 class="text-danger text-center ">DANH SÁCH ĐĂNG KÝ KHÁM</h3>
+    <div class="border-top border-dark">
+        <br>
+    <form>
+        <div class="form-group">
+             <label class="text-danger font-weight-bold" for="kw">Nhập Ngày Cần Tìm Kiếm</label>
+            <input type="date" class="form-control" name="kw" id="kw"/>
+        </div>
+        <input type="submit" value="Tìm Kiếm Theo Ngày" class="btn btn-danger"/>
+        </br>
+    </form>
+    </br>
+    </div>
+</div>
+
+{% if khambenh %}
+<table class="table table-hover table-bordered border">
+    <thead>
+    <tr>
+        <th>Số Thứ Tự</th>
+        <th>Họ Tên</th>
+        <th>Giới Tính</th>
+        <th>Năm Sinh</th>
+        <th>Số Điện Thoại</th>
+        <th>Trạng Thái Hoàn Tất Thủ Tục</th>
+        <th>Trạng Thái Kê Toa Thuốc</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for list in khambenh %}
+    <tr>
+        <td>{{list[0]}}</td>
+        <td>{{list[1]}} {{list[2]}}</td>
+         {% if list[3].__eq__("male") %}
+        <td>NAM</td>
+         {%else%}
+          <td>NỮ</td>
+        {%endif%}
+        <td>{{list[4]}}</td>
+        <td>{{list[8]}}</td>
+        {% if list[9].__eq__(True) %}
+        <td class="text-success">Đã Hoàn Tất Danh Sách Khám</td>
+        {% else %}
+        <td class="text-danger">Y Tá Đang Kiểm Duyệt</td>
+
+        {%endif%}
+        {% if list[10].__eq__(True)%}
+        <td class="text-success">Bệnh Nhân Đã Nhận Toa Thuốc</td>
+        {%else%}
+        <td class="text-danger">Bác Sĩ Đang Khám</td>
+        {%endif%}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{%else%}
+<h3> Chưa có ai đăng ký khám</h3>
+{%endif%}
+<br>
+
+
+{% if error_msg %}
+<div class="alert alert-danger">
+    {{error_msg}}
+</div>
+{% endif %}
+
+{% if message_success %}
+<div class="alert alert-success">
+    {{message_success}}
+</div>
+{% endif %}
+
+
+{% endblock%}

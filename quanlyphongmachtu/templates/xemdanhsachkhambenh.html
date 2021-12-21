@@ -26,7 +26,10 @@
       <tr>
         <td>{{list[0]}}</td>
         <td>{{list[1]}} {{list[2]}}</td>
-        <td>{{list[3]}}</td>
+          {% if list[3].__eq__("male") %}
+        <td>NAM</td>
+         {%else%}
+        <td>NỮ</td>
         <td>{{list[4]}}</td>
         <td>{{list[5]}} {{ list[6] }} {{ list[7] }}</td>
         <td>{{list[8]}}</td>

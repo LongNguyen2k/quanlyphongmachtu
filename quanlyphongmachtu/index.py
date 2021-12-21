@@ -194,6 +194,12 @@ def xemthongtin_khambenh(user_id):
                            thongtin_khambenh=thongtin_khambenh)
 
 
+@app.route("/xemdanhsachkhambenh_bacsi", methods=['get', 'post'])
+def xemdanhsach_khambenh_bacsi():
+    listkhambenh = utils.getlist_khambenhbacsi()
+    return render_template("xemdanhsachkhambenhbacsi.html", khambenh=listkhambenh)
+
+
 @app.route("/add-phone", methods=['post'])
 def add_phones():
     phone_number = request.form.get('phone')

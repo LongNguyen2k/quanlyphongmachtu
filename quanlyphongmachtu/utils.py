@@ -186,6 +186,21 @@ def getlist_khambenh():
     return list_query
 
 
+def getlist_khambenhbacsi():
+    current_date = datetime.now()
+    list_query = db.session.query(KhamBenh.id, UserInfo.first_name, UserInfo.last_name, UserInfo.gender,
+                                  UserInfo.birthday, AddressStreet.address_street, AddressStreet.city,
+                                  AddressStreet.country, PhoneNumber.number_phone, KhamBenh.trangthai_hoantatthutuc, KhamBenh.trangthai_khambenh) \
+        .select_from(UserInfo) \
+        .join(KhamBenh) \
+        .join(AddressStreet) \
+        .join(PhoneNumber) \
+        .filter(extract('day', KhamBenh.lich_khambenh).__eq__(current_date.day),
+                extract('month', KhamBenh.lich_khambenh).__eq__(current_date.month),
+                extract('year', KhamBenh.lich_khambenh).__eq__(current_date.year)).all()
+    return list_query
+
+
 def sendsms_forpatient(patient_phonenumber, **kwargs):
     # xử lý số điện thoại truyền vào
     country_code = "+84"
