@@ -9,8 +9,44 @@
 </head>
 <body>
 {% block content %}
+    <div id="demo" class="carousel slide" data-ride="carousel">
+
+      <!-- Indicators -->
+      <ul class="carousel-indicators">
+        <li data-target="#demo" data-slide-to="0" class="active"></li>
+        <li data-target="#demo" data-slide-to="1"></li>
+        <li data-target="#demo" data-slide-to="2"></li>
+      </ul>
+
+      <!-- The slideshow -->
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{url_for('static', filename='uploads/hinh3.jpg')}}" alt="Los Angeles" height="675" width="100%">
+        </div>
+        <div class="carousel-item">
+          <img src="{{url_for('static', filename='uploads/hinh2.jpg')}}" alt="Chicago" height="100%">
+        </div>
+        <div class="carousel-item">
+          <img src="{{url_for('static', filename='uploads/hinh4.jpg')}}" alt="New York" width="1050" height="675">
+          <div class="carousel-caption">
+            <h3>REGISTER FOR SURGERY</h3>
+            <p>ĐĂNG KÝ KHÁM ĐỂ ĐƯỢC NHẬN TƯ VẤN TỪ CÁC BÁC SĨ TỐT NHẤT CỦA PHÒNG MẠCH</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left and right controls -->
+      <a class="carousel-control-prev" href="#demo" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </a>
+      <a class="carousel-control-next" href="#demo" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </a>
+
+    </div>
 {% if current_user.is_authenticated %}
 {% if current_user.user_role_id == 2 %}
+</br>
     <h1 class="text-info text-center">CHÀO MỪNG ĐẾN PHÒNG KHÁM</h1>
     <h2 class="text-success text-center">{{current_user.first_name}} {{ current_user.last_name }} </h2>
     <span class=" text-info font-weight-bold">CHỌN ĐĂNG KÝ KHÁM ĐỂ ĐẶT LỊCH KHÁM Ở PHÒNG MẠCH</span>
@@ -19,6 +55,7 @@
     <!--                            <p class="font-weight-bold">{{p.phone_type}}: {{p.number_phone}}</p>-->
     <!--                {% endfor%}-->
 {% if phones.count() == 0 %}
+</br>
     <form method="post" action="{{ url_for('add_phones')}}">
         <div class="form-group">
             <input type="hidden" name="user_id" value="{{current_user.id}}">
@@ -28,6 +65,7 @@
             <input type="submit" class="btn btn-danger" value="Thêm Số Điện Thoạis"/>
         </div>
     </form>
+</br>
 {% else %}
     <div class="row">
         <a href="{{url_for('dang_ky_kham', user_id = current_user.id)}}" class="btn btn-success">Đăng Ký Khám</a>
@@ -37,14 +75,19 @@
         <a class="btn btn-success" href="{{url_for('xemthongtin_khambenh', user_id=current_user.id)}}">Xem thông tin Khám
             Bệnh</a>
     </div>
+</br>
 {% endif %}
 {% endif %}
 
 {% else %}
+</br>
+</br>
     <h1 class="subject text-center text-danger">
         Quản Lý Phòng Mạch Tư
     </h1>
     <h3 class="text-Success"> Người dùng chưa đăng nhập </h3>
+    <a href="{{url_for('user_signin')}}" class="btn btn-danger">ĐĂNG NHẬP ĐỂ BẮT ĐẦU ĐĂNG KÝ KHÁM</a>
+
 {% endif %}
 {% if current_user.user_role_id == 3 and current_user.active == True %}
     <br>
@@ -61,11 +104,13 @@
     <div class="row">
     <a class="btn btn-success " href="{{url_for('xemdanhsach_khambenh')}}">Xem Danh Sách Khám Bệnh</a>
     </div>
+</br>
 {%endif%}
 {%if (current_user.user_role_id == 3 or current_user.user_role_id == 4) and current_user.active == False %}
     <br>
     <h1 class="text-danger"> Tài Khoản Đang Được Phê Duyệt Bởi Quản Trị Viên!</h1>
     <h3 class="text-danger">Nhân Viên Vui Lòng Quay Lại Sau.</h3>
+</br>
 {%endif%}
 
 {% if current_user.user_role_id == 4 and current_user.active == True %}
@@ -80,10 +125,14 @@
     <a class="btn btn-success " href="{{url_for('xemdanhsach_khambenh_bacsi')}}">Xem Danh Sách Khám Bệnh</a>
 </div>
 
+</br>
 
 {% endif %}
 
+
 {% endblock %}
+
+
 
 </body>
 </html>
