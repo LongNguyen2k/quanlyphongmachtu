@@ -28,7 +28,7 @@
                     {{current_user.first_name}} {{ current_user.last_name }}
                 </a>
             </li>
-            <li class="nav-item">
+             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('signout')}}">Đăng Xuất</a>
             </li>
             {% else %}
@@ -39,16 +39,29 @@
                 <a class="nav-link" href="{{ url_for('register') }}">Đăng Ký</a>
             </li>
             {% endif %}
-            <li class="nav-item dropdown">
+            {% if current_user.user_role_id == 4 and current_user.active == True %}
+             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                    Dropdown link
+                    Kê Toa
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Link 1</a>
-                    <a class="dropdown-item" href="#">Link 2</a>
-                    <a class="dropdown-item" href="#">Link 3</a>
+                    <a class="dropdown-item" href="{{url_for('list_medicines')}}">Danh Sách Các Loại Thuốc</a>
+                    {%for u in unit_medicines %}
+                    <a class="dropdown-item" href="{{url_for('list_medicines', unitmedicine_id=u.id)}}">Đơn vị {{u.name}}</a>
+                    {% endfor %}
                 </div>
             </li>
+
+
+            {%endif%}
+
+
         </ul>
     </div>
+    {% if current_user.user_role_id == 4 and current_user.active == True %}
+      <form class="form-inline">
+                <input class="form-control mr-sm-2" name="keyword" type="text" placeholder="Nhập từ khóa">
+                <button class="btn btn-success" type="submit">Search</button>
+      </form>
+     {%endif%}
 </nav>

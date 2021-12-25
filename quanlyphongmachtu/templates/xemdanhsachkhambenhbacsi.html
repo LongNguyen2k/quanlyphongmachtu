@@ -30,46 +30,47 @@
 </div>
 
 {% if khambenh %}
-<table class="table table-hover table-bordered border">
-    <thead>
-    <tr>
-        <th>Số Thứ Tự</th>
-        <th>Họ Tên</th>
-        <th>Giới Tính</th>
-        <th>Năm Sinh</th>
-        <th>Số Điện Thoại</th>
-        <th>Trạng Thái Hoàn Tất Thủ Tục</th>
-        <th>Trạng Thái Kê Toa Thuốc</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for list in khambenh %}
-    <tr>
-        <td>{{list[0]}}</td>
-        <td>{{list[1]}} {{list[2]}}</td>
-         {% if list[3].__eq__("male") %}
-        <td>NAM</td>
-         {%else%}
-          <td>NỮ</td>
-        {%endif%}
-        <td>{{list[4]}}</td>
-        <td>{{list[8]}}</td>
-        {% if list[9].__eq__(True) %}
-        <td class="text-success">Đã Hoàn Tất Danh Sách Khám</td>
-        {% else %}
-        <td class="text-danger">Y Tá Đang Kiểm Duyệt</td>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered border">
+        <thead>
+        <tr>
+            <th>Số Thứ Tự</th>
+            <th>Họ Tên</th>
+            <th>Giới Tính</th>
+            <th>Năm Sinh</th>
+            <th>Số Điện Thoại</th>
+            <th>Trạng Thái Hoàn Tất Thủ Tục</th>
+            <th>Trạng Thái Kê Toa Thuốc</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for list in khambenh %}
+        <tr>
+            <td>{{list[0]}}</td>
+            <td>{{list[1]}} {{list[2]}}</td>
+             {% if list[3].__eq__("male") %}
+            <td>NAM</td>
+             {%else%}
+              <td>NỮ</td>
+            {%endif%}
+            <td>{{list[4]}}</td>
+            <td>{{list[8]}}</td>
+            {% if list[9].__eq__(True) %}
+            <td class="text-success">Đã Hoàn Tất Danh Sách Khám</td>
+            {% else %}
+            <td class="text-danger">Y Tá Đang Kiểm Duyệt</td>
 
-        {%endif%}
-        {% if list[10].__eq__(True)%}
-        <td class="text-success">Bệnh Nhân Đã Nhận Toa Thuốc</td>
-        {%else%}
-        <td class="text-danger">Bác Sĩ Đang Khám</td>
-        {%endif%}
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
+            {%endif%}
+            {% if list[10].__eq__(True)%}
+            <td class="text-success">Bệnh Nhân Đã Nhận Toa Thuốc</td>
+            {%else%}
+            <td class="text-danger">Bác Sĩ Đang Khám</td>
+            {%endif%}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {%else%}
 <h3> Chưa có ai đăng ký khám</h3>
 {%endif%}

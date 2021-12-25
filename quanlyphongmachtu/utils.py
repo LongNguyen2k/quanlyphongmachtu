@@ -1,11 +1,33 @@
 from datetime import datetime
 from datetime import date
 from quanlyphongmachtu import app, db
-from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber, KhamBenh, QuyDinhKham
+from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber\
+    , KhamBenh, QuyDinhKham, UnitMedicine, Medicine
 from sqlalchemy.sql import extract, func
 from twilio.rest import Client
 import hashlib
 import os
+
+
+def load_unitmedicines():
+    return UnitMedicine.query.all()
+
+
+def load_medicines(unitmedicine_id=None, keyword=None, from_price=None, to_price=None, page=1):
+    # trả về .all() để có thể kiểm tra None()
+    medicines = Medicine.query.filter(Medicine.active.__eq__(True))
+    if unitmedicine_id:
+        medicines = medicines.filter(Medicine.unitmedicine_id.__eq__(unitmedicine_id))
+    if keyword:
+        medicines = medicines.filter(Medicine.name.contains(keyword))
+
+    page_size = app.config['PageSize']
+    start = (page-1) * page_size
+    return medicines.slice(start, start+page_size).all()
+
+
+def count_medicine():
+    return Medicine.query.filter(Medicine.active.__eq__(True)).count()
 
 
 def check_admin_login(username, password):

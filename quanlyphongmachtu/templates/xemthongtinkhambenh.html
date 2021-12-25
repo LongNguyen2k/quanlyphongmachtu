@@ -11,33 +11,35 @@
         <div class="container">
             <h2>Ngày Khám</h2>
             <p class="font-weight-normal">{{t.lich_khambenh}}</p>
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Số Thứ Tự</th>
-                    <th>Họ Tên</th>
-                    <th>Giới Tính</th>
-                    <th>Năm Sinh</th>
-                    <th>Địa Chỉ</th>
-                    <th>Số Điện Thoại</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{t.id}}</td>
-                    <td>{{user_info.first_name}} {{user_info.last_name}}</td>
-                    {% if user_info.gender.__eq__("male") %}
-                    <td>NAM</td>
-                    {%else%}
-                    <td>NỮ</td>
-                    {%endif%}
-                    <td>{{user_info.birthday}}</td>
-                    <td>{{address.address_street}}</td>
-                    <td>{{phones[0].number_phone}}</td>
-                </tr>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Số Thứ Tự</th>
+                        <th>Họ Tên</th>
+                        <th>Giới Tính</th>
+                        <th>Năm Sinh</th>
+                        <th>Địa Chỉ</th>
+                        <th>Số Điện Thoại</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{t.id}}</td>
+                        <td>{{user_info.first_name}} {{user_info.last_name}}</td>
+                        {% if user_info.gender.__eq__("male") %}
+                        <td>NAM</td>
+                        {%else%}
+                        <td>NỮ</td>
+                        {%endif%}
+                        <td>{{user_info.birthday}}</td>
+                        <td>{{address.address_street}}</td>
+                        <td>{{phones[0].number_phone}}</td>
+                    </tr>
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <h3 class="text-info">Trạng Thái Khám Bệnh:
             {%if t.trangthai_khambenh == True %}

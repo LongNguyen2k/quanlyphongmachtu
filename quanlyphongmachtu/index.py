@@ -1,3 +1,5 @@
+import math
+
 from flask import render_template, request, redirect, url_for, flash
 from quanlyphongmachtu import app, login
 import os
@@ -6,6 +8,26 @@ from quanlyphongmachtu.admin import *
 from flask_login import login_user, logout_user, current_user, login_required
 import cloudinary.uploader
 from datetime import date
+
+
+@app.context_processor
+def common_response():
+    return{
+        'unit_medicines': utils.load_unitmedicines()
+    }
+
+
+@app.route("/medicines-list")
+@login_required
+def list_medicines():
+
+    unitmedicine_id = request.args.get("unitmedicine_id")
+    kw = request.args.get("keyword")
+    page = int(request.args.get('page', 1))
+    counter = utils.count_medicine()
+    medicines = utils.load_medicines(unitmedicine_id, keyword=kw, page=page)
+
+    return render_template("medicines.html", medicines=medicines, pages=math.ceil(counter/app.config['PageSize']))
 
 
 @app.route("/")
