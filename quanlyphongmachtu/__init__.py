@@ -14,7 +14,7 @@ app.config['PAGE_SIZE'] = 4
 app.config['ADMIN_ID'] = 1
 app.config['PATIENT_ID'] = 2
 app.config['QuyDinhKham'] = 1
-app.config['PageSize'] = 3
+app.config['PageSize'] = 10
 db = SQLAlchemy(app)
 
 admin = Admin(app, name='QUẢN LÝ PHÒNG MẠCH TƯ', template_mode='bootstrap4')

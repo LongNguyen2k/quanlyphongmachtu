@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% extends 'layout/base.html'%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {%block title%} Danh Sách Các Loại Thuốc{%endblock%}
+
+</head>
+<body>
+{% block content %}
+<br>
+<h1 class="subject"> Danh Sách các Loại Thuốc</h1>
+
+{% if medicines %}
+
+
+
+<div class="row">
+    {% for m in medicines %}
+    <div class="col-md-3 col-xs-12" style="padding:5px">
+        <div class="card" style="padding:5px">
+          <img class="card-img-top" src="{{ url_for('static', filename='uploads/drug.jpg') }}" alt="{{ m.name }}">
+          <div class="card-body">
+            <h4 class="card-title">{{ m.name }}</h4>
+            <p class="card-text">{{ "{:,.1f}".format(m.price) }} VND</p>
+            <a href="#" class="btn btn-primary" onclick="">Dat hang</a>
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+<br>
+    {% if pages > 1 %}
+    <ul class="pagination">
+     {% for idx in range(1, pages + 1) %}
+      <li class="page-item"><a class="page-link" href="{{ url_for('list_medicines', page=idx) }}">{{idx}}</a></li>
+      {%endfor%}
+    </ul>
+    {% endif %}
+{% else %}
+<p><i>Khong co san pham nao!!!</i></p>
+{% endif %}
+
+{% endblock %}
+</body>
