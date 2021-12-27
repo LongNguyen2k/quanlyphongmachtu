@@ -282,3 +282,7 @@ def hoantat_thutuc(khambenh_id):
     user_khambenh = KhamBenh.query.get(khambenh_id)
     user_khambenh.trangthai_hoantatthutuc = True
     db.session.commit()
+
+
+def get_khambenhinfo_byid(khambenh_id):
+    return KhamBenh.query.get(khambenh_id)

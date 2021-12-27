@@ -1,0 +1,96 @@
+{%extends 'layout/base.html'%}
+{% block title%}LẬP PHIẾU KHÁM CHO BỆNH NHÂN{% endblock%}
+
+{%block content%}
+</br>
+
+
+{% if current_user.user_role_id == 4 and current_user.active == True %}
+
+<div class="border border-dark" xmlns="http://www.w3.org/1999/html">
+    <h3 class="text-danger text-center ">LẬP PHIẾU KHÁM BỆNH</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-6 border border-dark">
+                <br>
+                <p class="font-weight-bold">Họ Tên: {{ userinfo.first_name }} {{ userinfo.last_name }} </p>
+            </div>
+            <div class="col-sm-9 col-md-6 border border-dark">
+                <br>
+                <p class="font-weight-bold">Ngày Khám: {{ thongtinbenhnhan.lich_khambenh }}</p>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-6 border-right border-dark">
+                <p class="font-weight-bold">Triệu Chứng: </p>
+                <input class="form-control" type="text" name="trieuchung" placeholder="Nhập Triệu Chứng Bệnh Nhân"
+                       required/>
+                <br>
+            </div>
+            <div class="col-sm-9 col-md-6">
+                <p class="font-weight-bold">Dự Đoán Loại Bệnh: </p>
+                <input class="form-control" type="text" name="dudoanloaibenh"
+                       placeholder="Nhập Thông Tin Dự Đoán Loại Bệnh" required/>
+                <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 border-top border-dark">
+        <p class="font-weight-bold">Cách Dùng Thuốc: </p>
+        <input class="form-control" type="text" name="cachdungthuoc" placeholder="Nhập Cách Dùng Thuốc Kê Toa" required/>
+        <br>
+    </div>
+
+
+</div>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered ">
+        <thead>
+        <tr>
+            <th>Số Thứ Tự</th>
+            <th>Thuốc</th>
+            <th>Đơn Vị</th>
+            <th>Số Lượng</th>
+            <th>Cách Dùng</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>John</td>
+            <td>Doe</td>
+            <td>john@example.com</td>
+        </tr>
+        <tr>
+            <td>Mary</td>
+            <td>Moe</td>
+            <td>mary@example.com</td>
+        </tr>
+        <tr>
+            <td>July</td>
+            <td>Dooley</td>
+            <td>july@example.com</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="alert alert-info">
+    <h5>Tổng Sản Phẩm</h5>
+    <h5>Tổng Tiền Đơn Thuốc</h5>
+</div>
+
+<input type="button" value="Lập Phiếu Khám" class="btn btn-danger" onclick="">
+
+{%else%}
+<h1 class="text-danger text-center"> BẠN KHÔNG CÓ QUYỀN HẠN ĐỂ TRUY CẬP TRANG NÀY</h1>
+
+{%endif%}
+
+{% endblock%}

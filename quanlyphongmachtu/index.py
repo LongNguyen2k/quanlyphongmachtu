@@ -20,7 +20,6 @@ def common_response():
 @app.route("/medicines-list")
 @login_required
 def list_medicines():
-
     unitmedicine_id = request.args.get("unitmedicine_id")
     kw = request.args.get("keyword")
     page = int(request.args.get('page', 1))
@@ -261,6 +260,13 @@ def update_profile():
             return redirect(url_for('profile_page', user_id=user_id))
         except Exception as ex:
             error_msg = 'Đã có lỗi xảy ra' + str(ex)
+
+
+@app.route("/bacsi/lapphieukham/<int:khambenh_id>", methods=['get', 'post'])
+def lapphieukham(khambenh_id):
+    thongtinbenhnhan =utils.get_khambenhinfo_byid(khambenh_id)
+    userinfo = utils.get_user_by_id(thongtinbenhnhan.user_info_id)
+    return render_template("/bacsi/lapphieukham.html", thongtinbenhnhan=thongtinbenhnhan, userinfo=userinfo)
 
 
 if __name__ == "__main__":

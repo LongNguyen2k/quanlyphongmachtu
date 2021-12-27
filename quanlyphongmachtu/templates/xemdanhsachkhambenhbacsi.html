@@ -30,7 +30,7 @@
 </div>
 
 {% if khambenh %}
-<div class="table-responsive">
+<div class="table-responsive table-hover">
     <table class="table table-hover table-bordered border">
         <thead>
         <tr>
@@ -41,10 +41,12 @@
             <th>Số Điện Thoại</th>
             <th>Trạng Thái Hoàn Tất Thủ Tục</th>
             <th>Trạng Thái Kê Toa Thuốc</th>
+            <th> Tương Tác Bác Sĩ</th>
         </tr>
         </thead>
         <tbody>
         {% for list in khambenh %}
+        {% if list[10].__eq__(False) %}
         <tr>
             <td>{{list[0]}}</td>
             <td>{{list[1]}} {{list[2]}}</td>
@@ -55,18 +57,38 @@
             {%endif%}
             <td>{{list[4]}}</td>
             <td>{{list[8]}}</td>
+
             {% if list[9].__eq__(True) %}
             <td class="text-success">Đã Hoàn Tất Danh Sách Khám</td>
             {% else %}
             <td class="text-danger">Y Tá Đang Kiểm Duyệt</td>
 
             {%endif%}
+
             {% if list[10].__eq__(True)%}
             <td class="text-success">Bệnh Nhân Đã Nhận Toa Thuốc</td>
             {%else%}
             <td class="text-danger">Bác Sĩ Đang Khám</td>
             {%endif%}
+
+            {%if list[9].__eq__(False) and list[10].__eq__(False) %}
+            <td>
+                <p class="text-danger">Bệnh Nhân Đang Được Y Tá kiểm duyệt</p>
+            </td>
+            {% else %}
+            <td>
+                 <a class="btn btn-success " href="{{url_for('lapphieukham', khambenh_id=list[0] )}}">Lập Phiếu Khám Cho Bệnh Nhân</a>
+            </td>
+            {% endif %}
+
         </tr>
+        {%else%}
+        <tr>
+            <td>
+                <p class="text-success font-weight-bold"> Bệnh Nhân Đã Được Khám Và Kê Toa Thuốc</p>
+            </td>
+        </tr>
+        {% endif%}
         {% endfor %}
         </tbody>
     </table>
