@@ -22,8 +22,10 @@
           <img class="card-img-top" src="{{ url_for('static', filename='uploads/drug.jpg') }}" alt="{{ m.name }}">
           <div class="card-body">
             <h4 class="card-title">{{ m.name }}</h4>
+            <p class="card-text">Dạng: {{m.unitmedicine.name}}</p>
             <p class="card-text">{{ "{:,.1f}".format(m.price) }} VND</p>
-            <a href="#" class="btn btn-primary" onclick="">Dat hang</a>
+            <p class="card-text">Cách Dùng: {{m.usage}} VND</p>
+            <a href="#" class="btn btn-primary" onclick="">Kê Đơn</a>
           </div>
         </div>
     </div>

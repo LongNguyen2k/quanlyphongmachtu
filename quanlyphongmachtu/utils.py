@@ -286,3 +286,7 @@ def hoantat_thutuc(khambenh_id):
 
 def get_khambenhinfo_byid(khambenh_id):
     return KhamBenh.query.get(khambenh_id)
+
+
+def count_prescription(prescription):
+    pass

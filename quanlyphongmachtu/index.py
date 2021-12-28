@@ -1,6 +1,6 @@
 import math
 
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from quanlyphongmachtu import app, login
 import os
 import utils
@@ -267,6 +267,35 @@ def lapphieukham(khambenh_id):
     thongtinbenhnhan =utils.get_khambenhinfo_byid(khambenh_id)
     userinfo = utils.get_user_by_id(thongtinbenhnhan.user_info_id)
     return render_template("/bacsi/lapphieukham.html", thongtinbenhnhan=thongtinbenhnhan, userinfo=userinfo)
+
+
+@app.route('/api/add-to-prescription', methods=['post'])
+def api_add_to_prescription():
+    id = ''
+    name = ''
+    unitmedicine_name = ''
+    unitprice = ''
+    usage = ''
+
+    prescription = session.get('prescription')
+    if prescription:
+        prescription = {}
+    # thuốc đã có trong giỏ thì tăng số lượng
+    if id in prescription:
+        prescription[id]['quantity'] = prescription[id]['quantity'] + 1
+    else:
+        # chưa có thì tạo ra một đối tượng mới bỏ vào giỏ
+        prescription[id] = {
+            'id': id,
+            'name': name,
+            'unitmedicine_name': unitmedicine_name,
+             'usage': usage,
+            'unitprice': unitprice,
+            'quantity': 1
+        }
+
+    session['prescription'] = prescription
+
 
 
 if __name__ == "__main__":

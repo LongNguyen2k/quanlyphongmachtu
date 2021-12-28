@@ -27,6 +27,7 @@ class Medicine(BaseModel):
     created_date = Column(DateTime, default=datetime.now())
     unitmedicine_id = Column(Integer, ForeignKey(UnitMedicine.id), nullable=False)
 
+
     def __str__(self):
         return self.name
 
