@@ -12,7 +12,7 @@ class BaseModel(db.Model):
 
 class UnitMedicine(BaseModel):
     name = Column(String(50), nullable=False)
-    medicines = relationship('Medicine', backref='unitmedicine', lazy=True )
+    medicines = relationship('Medicine', backref='unitmedicine', lazy=True)
 
     def __str__(self):
         return self.name
@@ -26,7 +26,7 @@ class Medicine(BaseModel):
     usage = Column(String(255))
     created_date = Column(DateTime, default=datetime.now())
     unitmedicine_id = Column(Integer, ForeignKey(UnitMedicine.id), nullable=False)
-
+    details = relationship('PhieuKhamBenhDetail', backref='medicine_detail', lazy=True)
 
     def __str__(self):
         return self.name
@@ -37,7 +37,7 @@ class TienKham(BaseModel):
 
 
 class UserRole(BaseModel):
-    __tablename__='user_role'
+    __tablename__ = 'user_role'
     name_role = Column(String(20), nullable=False)
     note_role = Column(String(50))
     userinfos = relationship('UserInfo', backref='userinfo_role', lazy=True)
@@ -47,7 +47,7 @@ class UserRole(BaseModel):
 
 
 class UserInfo(BaseModel, UserMixin):
-    __tablename__='userinfo'
+    __tablename__ = 'userinfo'
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
     avatar = Column(String(255))
@@ -60,6 +60,8 @@ class UserInfo(BaseModel, UserMixin):
     user_role_id = Column(Integer, ForeignKey('user_role.id'), nullable=False)
     khambenhs = relationship('KhamBenh', backref='userinfo_khambenh', lazy=True)
 
+    # bacsis = relationship('PhieuKhamBenh', backref='userinfobacsi_khambenh', lazy=True, )
+    # benhnhans = relationship('PhieuKhamBenh', backref='userinfobenhnhan_khambenh', lazy=True)
 
     def __str__(self):
         return str.format("{} {}", self.first_name, self.last_name)
@@ -72,11 +74,12 @@ class PhoneNumber(BaseModel):
 
 
 class AddressStreet(BaseModel):
-    __tablename__='address_street'
+    __tablename__ = 'address_street'
     city = Column(String(50))
     country = Column(String(50))
     address_street = Column(String(100), nullable=False)
     userinfos = relationship('UserInfo', backref='userinfo_address', lazy=True)
+
     def __str__(self):
         return str.format("{} Street, City {}, Country {}", self.address_street, self.city, self.country)
 
@@ -99,11 +102,29 @@ class KhamBenh(BaseModel):
     trangthai_hoantatthutuc = Column(Boolean, default=False)
     quydinhkham_id = Column(Integer, ForeignKey(QuyDinhKham.id), nullable=False)
     user_info_id = Column(Integer, ForeignKey(UserInfo.id), nullable=False)
+    phieukhambenh = relationship('PhieuKhamBenh', backref='khambenh_phieukhambenh', uselist=False, lazy=False)
 
 
+class PhieuKhamBenh(BaseModel):
+    khambenh_id = Column(Integer, ForeignKey(KhamBenh.id), nullable=False, unique=True)
+    bacsi_id = Column(Integer, ForeignKey(UserInfo.id), nullable=False)
+    nguoikham_id = Column(Integer, ForeignKey(UserInfo.id), nullable=False)
+    ngaytao_phieukham = Column(DateTime, default=datetime.now())
+    trieuchung = Column(String(200))
+    dudoan_loaibenh = Column(String(200))
+    cachdung = Column(String(200))
+    tongtienthuoc = Column(Float, default=0)
+    details = relationship('PhieuKhamBenhDetail', backref='phieukhambenh_detail', lazy=True)
+    phieukhambenh_bacsi = relationship("UserInfo", foreign_keys=[bacsi_id], backref='userinfobacsi_khambenh', lazy=True)
+    phieukhambenh_nguoikham = relationship("UserInfo", foreign_keys=[nguoikham_id], backref='userinfobenhnhan_khambenh',
+                                           lazy=True)
 
 
-
+class PhieuKhamBenhDetail(db.Model):
+    phieukhambenh_id = Column(Integer, ForeignKey(PhieuKhamBenh.id), nullable=False, primary_key=True)
+    medicine_id = Column(Integer, ForeignKey(Medicine.id), nullable=False, primary_key=True)
+    quantity = Column(Integer, default=0)
+    unit_price = Column(Float, default=0)
 
 
 #     donvithuocs = relationship('DonViThuoc', secondary='thuoc_donvithuoc', lazy='subquery',

@@ -7,6 +7,8 @@
 
 {% if current_user.user_role_id == 4 and current_user.active == True %}
 
+{% if thongtinbenhnhan.trangthai_khambenh.__eq__(False) %}
+
 <div class="border border-dark" xmlns="http://www.w3.org/1999/html">
     <h3 class="text-danger text-center ">LẬP PHIẾU KHÁM BỆNH</h3>
     <div class="container-fluid">
@@ -27,13 +29,13 @@
         <div class="row">
             <div class="col-sm-3 col-md-6 border-right border-dark">
                 <p class="font-weight-bold">Triệu Chứng: </p>
-                <input class="form-control" type="text" name="trieuchung" placeholder="Nhập Triệu Chứng Bệnh Nhân"
+                <input id="idTrieuChung" class="form-control" type="text" name="trieuchung" placeholder="Nhập Triệu Chứng Bệnh Nhân"
                        required/>
                 <br>
             </div>
             <div class="col-sm-9 col-md-6">
                 <p class="font-weight-bold">Dự Đoán Loại Bệnh: </p>
-                <input class="form-control" type="text" name="dudoanloaibenh"
+                <input id="idDuDoanLoaiBenh" class="form-control" type="text" name="dudoanloaibenh"
                        placeholder="Nhập Thông Tin Dự Đoán Loại Bệnh" required/>
                 <br>
             </div>
@@ -42,55 +44,73 @@
 
     <div class="col-sm-12 col-md-12 border-top border-dark">
         <p class="font-weight-bold">Cách Dùng Thuốc: </p>
-        <input class="form-control" type="text" name="cachdungthuoc" placeholder="Nhập Cách Dùng Thuốc Kê Toa" required/>
+        <input id="idcachdung_thuoc" class="form-control" type="text" name="cachdungthuoc" placeholder="Nhập Cách Dùng Thuốc Kê Toa" required/>
         <br>
     </div>
 
 
 </div>
+{%if 'prescription' in session and session['prescription']%}
 <div class="table-responsive">
     <table class="table table-hover table-bordered ">
         <thead>
         <tr>
             <th>Số Thứ Tự Thuốc</th>
-            <th>Thuốc</th>
+            <th>Tên Thuốc</th>
             <th>Đơn Vị</th>
-            <th>Số Lượng</th>
+            <th>Đơn Giá</th>
             <th>Cách Dùng</th>
-
+            <th>Số Lượng</th>
+            <th></th>
 
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>John</td>
-            <td>Doe</td>
-            <td>john@example.com</td>
+        {% for p in session['prescription'].values() %}
+        <tr id="medicine{{p.id}}">
+            <td>{{ p.id }}</td>
+            <td>{{p.name}}</td>
+            <td>{{p.unitmedicine_name}}</td>
+            <td>{{"{:,.1f}".format(p.unitprice)}}VND</td>
+            <td>{{p.usage}}</td>
+             <td>
+                <div class="form-control">
+                    <input type="number" min="1" value="{{p.quantity}}" onblur="updatePrescription({{p.id}}, this)" />
+                </div>
+            </td>
+            <td>
+                <input type="button" value="Xoa" class="btn btn-danger" onclick="deletePrescription({{p.id}})" />
+            </td>
+
         </tr>
-        <tr>
-            <td>Mary</td>
-            <td>Moe</td>
-            <td>mary@example.com</td>
-        </tr>
-        <tr>
-            <td>July</td>
-            <td>Dooley</td>
-            <td>july@example.com</td>
-        </tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>
 
 <div class="alert alert-info">
-    <h5>Tổng Sản Phẩm</h5>
-    <h5>Tổng Tiền Đơn Thuốc</h5>
+    <h5>Tổng Sản Phẩm: <span class="prescriptionCounter">{{stats.total_quantity}}</span></h5>
+    <h5>Tổng Tiền Đơn Thuốc: <span id="total_amount">{{"{:,.1f}".format(stats.total_price)}}</span>VND</h5>
 </div>
+<br>
+{%if current_user.is_authenticated%}
+<input type="button" value="Lập Phiếu Khám" class="btn btn-danger" onclick="addPrescription({{userinfo.id}}, {{thongtinbenhnhan.id}}, {{stats.total_price}})">
+{%else%}
+<a href="{{url_for('user_signin')}}">Đăng Nhập Để Kê Đơn Thuốc</a>
+{%endif%}
+<br>
+{%else%}
+<p class="alert alert-danger"><i>CHƯA CÓ THUỐC NÀO TRONG ĐƠN THUỐC</i></p>
+{%endif%}
 
-<input type="button" value="Lập Phiếu Khám" class="btn btn-danger" onclick="">
+{%else%}
+<br>
+<h1 class="text-danger text-center"> Bệnh Nhân Này Đã Được Kê Đơn Thuốc!!!</h1>
+{% endif%}
 
 {%else%}
 <h1 class="text-danger text-center"> BẠN KHÔNG CÓ QUYỀN HẠN ĐỂ TRUY CẬP TRANG NÀY</h1>
-
+<a href="{{url_for('user_signin')}}">Đăng Nhập Với Tài Khoản Bác Sĩ Để Kê Đơn Thuốc</a>
 {%endif%}
 
 {% endblock%}

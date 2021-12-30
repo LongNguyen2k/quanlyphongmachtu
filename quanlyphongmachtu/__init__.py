@@ -25,7 +25,7 @@ cloudinary.config(cloud_name='decmhyieh', api_key='413756871999116',
                   api_secret='G34UwtLLRY2hg_PCrmzs5pT9RTo')
 
 app.config['Twillio_account_sid'] = 'ACb95b4679048107af5a60eebb42811191'
-app.config['Twillio_auth_token'] = '74cb3b4f0add848815461589b68b0e81'
+app.config['Twillio_auth_token'] = '0c7fac8416bd21553dfa6294acceb491'
 app.config['DefaultTwillioPhone'] = "+13305258335"
 
 

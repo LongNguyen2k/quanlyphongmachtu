@@ -2,7 +2,8 @@ from datetime import datetime
 from datetime import date
 from quanlyphongmachtu import app, db
 from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber\
-    , KhamBenh, QuyDinhKham, UnitMedicine, Medicine
+    , KhamBenh, QuyDinhKham, UnitMedicine, Medicine, PhieuKhamBenh, PhieuKhamBenhDetail
+from flask_login import current_user
 from sqlalchemy.sql import extract, func
 from twilio.rest import Client
 import hashlib
@@ -289,4 +290,44 @@ def get_khambenhinfo_byid(khambenh_id):
 
 
 def count_prescription(prescription):
-    pass
+    total_quantity, total_price = 0, 0
+
+    if prescription:
+        for p in prescription.values():
+            total_quantity += p['quantity']
+            total_price += p['quantity'] * p['unitprice']
+        return {
+            'total_quantity': total_quantity,
+            'total_price': total_price
+        }
+    else:
+        return None
+
+
+def add_prescription(prescription, **kwargs):
+
+    if prescription:
+        phieukham = PhieuKhamBenh(khambenh_id=kwargs.get('phieukhambenh'),
+                                  bacsi_id=current_user.id,
+                                  nguoikham_id=kwargs.get('user_dangkykham'),
+                                  trieuchung=kwargs.get('trieuchung'),
+                                  dudoan_loaibenh=kwargs.get('dudoanbenh'),
+                                  cachdung=kwargs.get('cachdungthuoc'),
+                                  tongtienthuoc=kwargs.get('total_amount'))
+
+        db.session.add(phieukham)
+        db.session.commit()
+        for p in prescription.values():
+            d = PhieuKhamBenhDetail(phieukhambenh_id=phieukham.id,
+                                    medicine_id=p['id'],
+                                    quantity=p['quantity'],
+                                    unit_price=p['unitprice'])
+            db.session.add(d)
+
+        db.session.commit()
+
+
+def complete_prescription(phieukhambenh):
+    khambenh_info = get_khambenhinfo_byid(phieukhambenh)
+    khambenh_info.trangthai_khambenh = True
+    db.session.commit()

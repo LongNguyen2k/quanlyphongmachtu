@@ -1,6 +1,6 @@
 import math
 
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from quanlyphongmachtu import app, login
 import os
 import utils
@@ -12,8 +12,9 @@ from datetime import date
 
 @app.context_processor
 def common_response():
-    return{
-        'unit_medicines': utils.load_unitmedicines()
+    return {
+        'unit_medicines': utils.load_unitmedicines(),
+        'prescription_stats': utils.count_prescription(session.get('prescription'))
     }
 
 
@@ -26,7 +27,7 @@ def list_medicines():
     counter = utils.count_medicine()
     medicines = utils.load_medicines(unitmedicine_id, keyword=kw, page=page)
 
-    return render_template("medicines.html", medicines=medicines, pages=math.ceil(counter/app.config['PageSize']))
+    return render_template("medicines.html", medicines=medicines, pages=math.ceil(counter / app.config['PageSize']))
 
 
 @app.route("/")
@@ -64,7 +65,8 @@ def user_signin():
             user = utils.check_user_login(username=username, password=password)
             if user:
                 login_user(user=user)
-                return redirect(url_for('home'))
+                next = request.args.get('next', 'home')
+                return redirect(url_for(next))
             else:
                 error_msg = "Username hoặc Password không chính xác"
 
@@ -221,7 +223,8 @@ def xemdanhsach_khambenh_bacsi():
     dateInput = request.args.get("dateInput")
     ngaykham_homnay = date.today()
     listkhambenh = utils.getlist_khambenhbacsi(dateInput=dateInput)
-    return render_template("xemdanhsachkhambenhbacsi.html", khambenh=listkhambenh, dateInput=dateInput, ngaykham_homnay=ngaykham_homnay)
+    return render_template("xemdanhsachkhambenhbacsi.html", khambenh=listkhambenh, dateInput=dateInput,
+                           ngaykham_homnay=ngaykham_homnay)
 
 
 @app.route("/add-phone", methods=['post'])
@@ -262,23 +265,27 @@ def update_profile():
             error_msg = 'Đã có lỗi xảy ra' + str(ex)
 
 
-@app.route("/bacsi/lapphieukham/<int:khambenh_id>", methods=['get', 'post'])
+@app.route("/bacsi/lapphieukham/<int:khambenh_id>", methods=['get'])
 def lapphieukham(khambenh_id):
-    thongtinbenhnhan =utils.get_khambenhinfo_byid(khambenh_id)
+    thongtinbenhnhan = utils.get_khambenhinfo_byid(khambenh_id)
     userinfo = utils.get_user_by_id(thongtinbenhnhan.user_info_id)
-    return render_template("/bacsi/lapphieukham.html", thongtinbenhnhan=thongtinbenhnhan, userinfo=userinfo)
+    return render_template("/bacsi/lapphieukham.html", thongtinbenhnhan=thongtinbenhnhan, userinfo=userinfo,
+                           stats=utils.count_prescription(session.get('prescription')))
 
 
 @app.route('/api/add-to-prescription', methods=['post'])
+@login_required
 def api_add_to_prescription():
-    id = ''
-    name = ''
-    unitmedicine_name = ''
-    unitprice = ''
-    usage = ''
+    data = request.json
+    id = str(data.get('id'))
+    name = data.get('name')
+    unitmedicine_name = data.get('unitmedicine_name')
+    usage = data.get('usage')
+    unitprice = data.get('unitprice')
 
     prescription = session.get('prescription')
-    if prescription:
+    # chưa có giỏ thì tạo giỏ thuốc mới trong session
+    if not prescription:
         prescription = {}
     # thuốc đã có trong giỏ thì tăng số lượng
     if id in prescription:
@@ -289,13 +296,66 @@ def api_add_to_prescription():
             'id': id,
             'name': name,
             'unitmedicine_name': unitmedicine_name,
-             'usage': usage,
+            'usage': usage,
             'unitprice': unitprice,
             'quantity': 1
         }
 
     session['prescription'] = prescription
 
+    return jsonify(utils.count_prescription(prescription))
+
+
+@app.route('/api/update-to-prescription', methods=['put'])
+def update_to_prescription():
+    data = request.json
+    id = str(data.get("id"))
+    quantity = data.get('quantity')
+    prescription = session.get('prescription')
+
+    if prescription:
+        if id in prescription:
+            prescription[id]['quantity'] = quantity
+            session['prescription'] = prescription
+
+    return jsonify(utils.count_prescription(prescription))
+
+
+@app.route('/api/delete-to-prescription/<medicine_id>', methods=['delete'])
+def delete_to_prescription(medicine_id):
+    prescription = session.get('prescription')
+    if prescription:
+        if medicine_id in prescription:
+            del prescription[medicine_id]
+            session['prescription'] = prescription
+
+    return jsonify(utils.count_prescription(prescription))
+
+
+@app.route('/api/add-prescription', methods=['post'])
+@login_required
+def add_prescription():
+    data = request.json
+    trieuchung = data.get('trieuchung')
+    dudoanbenh = data.get('dudoanbenh')
+    user_dangkykham = data.get('user_dangkykham')
+    phieukhambenh = data.get('phieukhambenh')
+    cachdungthuoc = data.get('cachdungthuoc')
+    total_amount = data.get('total_amount')
+    try:
+        utils.add_prescription(prescription=session.get('prescription'),
+                               phieukhambenh=phieukhambenh,
+                               user_dangkykham=user_dangkykham,
+                               trieuchung=trieuchung,
+                               dudoanbenh=dudoanbenh,
+                               cachdungthuoc=cachdungthuoc,
+                               total_amount=total_amount)
+        utils.complete_prescription(int(phieukhambenh))
+        del session['prescription']
+    except:
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
 
 
 if __name__ == "__main__":
