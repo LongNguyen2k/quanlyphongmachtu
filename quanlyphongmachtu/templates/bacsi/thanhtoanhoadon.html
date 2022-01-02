@@ -8,18 +8,18 @@
 {% if current_user.user_role_id == 4 and current_user.active == True %}
 <h1 class="text-info">Thanh Toán Hóa Đơn Cho Bệnh Nhân Đăng Ký Khám</h1>
 <h3 class="text-danger">ID Phiếu Khám: {{thongtinphieukham.id}}</h3>
-{% if thongtinphieukham.__eq__(False) %}
+{% if thongtinphieukham.trangthaithanhtoan.__eq__(False) %}
 <div class="border border-dark" xmlns="http://www.w3.org/1999/html">
     <h3 class="text-danger text-center ">LẬP PHIẾU KHÁM BỆNH</h3>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 col-md-6 border border-dark">
                 <br>
-                <p class="font-weight-bold">Họ Tên: {{ userinfo.first_name }} {{ userinfo.last_name }} </p>
+                <p class="font-weight-bold">Họ Tên: </p>
             </div>
             <div class="col-sm-9 col-md-6 border border-dark">
                 <br>
-                <p class="font-weight-bold">Ngày Khám: {{ thongtinbenhnhan.lich_khambenh }}</p>
+                <p class="font-weight-bold">Ngày Khám: </p>
 
             </div>
         </div>
@@ -28,23 +28,19 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 col-md-6 border-right border-dark">
-                <p class="font-weight-bold">Triệu Chứng: </p>
-                <input id="idTrieuChung" class="form-control" type="text" name="trieuchung"
-                       placeholder="Nhập Triệu Chứng Bệnh Nhân"
-                       required/>
+                <p class="font-weight-bold">Tiền Khám </p>
+
                 <br>
             </div>
             <div class="col-sm-9 col-md-6">
-                <p class="font-weight-bold">Dự Đoán Loại Bệnh: </p>
-                <input id="idDuDoanLoaiBenh" class="form-control" type="text" name="dudoanloaibenh"
-                       placeholder="Nhập Thông Tin Dự Đoán Loại Bệnh" required/>
-                <br>
+                <p class="font-weight-bold">Tiền Thuốc </p>
+
             </div>
         </div>
     </div>
 
     <div class="col-sm-12 col-md-12 border-top border-dark">
-        <p class="font-weight-bold">Cách Dùng Thuốc: </p>
+        <p class="font-weight-bold">Tổng Tiền Thuốc</p>
         <input id="idcachdung_thuoc" class="form-control" type="text" name="cachdungthuoc"
                placeholder="Nhập Cách Dùng Thuốc Kê Toa" required/>
         <br>
@@ -52,43 +48,7 @@
 
 
 </div>
-{%if 'prescription' in session and session['prescription']%}
-<div class="table-responsive">
-    <table class="table table-hover table-bordered ">
-        <thead>
-        <tr>
-            <th>Số Thứ Tự Thuốc</th>
-            <th>Tên Thuốc</th>
-            <th>Đơn Vị</th>
-            <th>Đơn Giá</th>
-            <th>Cách Dùng</th>
-            <th>Số Lượng</th>
-            <th></th>
 
-        </tr>
-        </thead>
-        <tbody>
-        {% for p in session['prescription'].values() %}
-        <tr id="medicine{{p.id}}">
-            <td>{{ p.id }}</td>
-            <td>{{p.name}}</td>
-            <td>{{p.unitmedicine_name}}</td>
-            <td>{{"{:,.1f}".format(p.unitprice)}}VND</td>
-            <td>{{p.usage}}</td>
-            <td>
-                <div class="form-control">
-                    <input type="number" min="1" value="{{p.quantity}}" onblur="updatePrescription({{p.id}}, this)"/>
-                </div>
-            </td>
-            <td>
-                <input type="button" value="Xoa" class="btn btn-danger" onclick="deletePrescription({{p.id}})"/>
-            </td>
-
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
 
 {%else%}
 <h3>Phiếu Khám Đã Được Thanh Toán</h3>

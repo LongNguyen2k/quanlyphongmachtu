@@ -359,6 +359,7 @@ def add_prescription():
 
 
 @app.route("/bacsi/thanhtoan/<khambenh_id>", methods=['get'])
+@login_required
 def thanhtoan_hoadon(khambenh_id):
     thongtinphieukham = utils.get_infophieukham(id_phieukham=int(khambenh_id))
     return render_template("bacsi/thanhtoanhoadon.html", thongtinphieukham=thongtinphieukham)
