@@ -125,7 +125,7 @@ def get_user_by_id(user_id):
 
 
 def account_info(user_id):
-    return Account.query.filter(Account.userinfo_id.__eq__(user_id)).first()
+    return Account.query.filter(Account.userinfo_id.__eq__(user_id))
 
 
 def phone_info(user_id):
@@ -331,3 +331,8 @@ def complete_prescription(phieukhambenh):
     khambenh_info = get_khambenhinfo_byid(phieukhambenh)
     khambenh_info.trangthai_khambenh = True
     db.session.commit()
+
+
+def get_infophieukham(id_phieukham):
+    thontin_phieukham = PhieuKhamBenh.query.filter(PhieuKhamBenh.khambenh_id.__eq__(id_phieukham)).first()
+    return thontin_phieukham

@@ -113,6 +113,7 @@ class PhieuKhamBenh(BaseModel):
     trieuchung = Column(String(200))
     dudoan_loaibenh = Column(String(200))
     cachdung = Column(String(200))
+    trangthaithanhtoan = Column(Boolean, default=False)
     tongtienthuoc = Column(Float, default=0)
     details = relationship('PhieuKhamBenhDetail', backref='phieukhambenh_detail', lazy=True)
     phieukhambenh_bacsi = relationship("UserInfo", foreign_keys=[bacsi_id], backref='userinfobacsi_khambenh', lazy=True)
@@ -125,6 +126,9 @@ class PhieuKhamBenhDetail(db.Model):
     medicine_id = Column(Integer, ForeignKey(Medicine.id), nullable=False, primary_key=True)
     quantity = Column(Integer, default=0)
     unit_price = Column(Float, default=0)
+
+
+
 
 
 #     donvithuocs = relationship('DonViThuoc', secondary='thuoc_donvithuoc', lazy='subquery',

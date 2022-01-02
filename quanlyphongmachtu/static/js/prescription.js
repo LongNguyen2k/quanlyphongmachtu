@@ -34,29 +34,35 @@ function addPrescription(userinfo_id, thongtinbenhnhan_id, total_amount) {
         let trieuchung = document.getElementById('idTrieuChung')
         let dudoanbenh = document.getElementById('idDuDoanLoaiBenh')
         let cachdungthuoc = document.getElementById('idcachdung_thuoc')
+            if ( (trieuchung.value === "") || (dudoanbenh.value === "") || (cachdungthuoc.value === "")) {
+                alert("Vui Lòng nhập thông tin cho phiếu khám")
+            }
+            else
+            {
+                fetch('/api/add-prescription', {
+                    method: 'post',
+                    body: JSON.stringify({
+                        'trieuchung': trieuchung.value,
+                        'dudoanbenh': dudoanbenh.value,
+                        'user_dangkykham': userinfo_id,
+                        'phieukhambenh': thongtinbenhnhan_id,
+                        'cachdungthuoc': cachdungthuoc.value,
+                        'total_amount': total_amount
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function(res) {
+                    return res.json()
+                }).then(function(data){
+                    if(data.code == 200)
+                        window.location.replace("/bacsi/thanhtoan/"+thongtinbenhnhan_id)
+                    else if( data.code == 400)
+                            alert(data.err_msg)
 
-            fetch('/api/add-prescription', {
-                method: 'post',
-                body: JSON.stringify({
-                    'trieuchung': trieuchung.value,
-                    'dudoanbenh': dudoanbenh.value,
-                    'user_dangkykham': userinfo_id,
-                    'phieukhambenh': thongtinbenhnhan_id,
-                    'cachdungthuoc': cachdungthuoc.value,
-                    'total_amount': total_amount
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(function(res) {
-                return res.json()
-            }).then(function(data){
-                if(data.code == 200)
-                    location.reload()
-                else if( data.code == 400)
-                        alert(data.err_msg)
+                }).catch(err => console.error(err))
 
-            }).catch(err => console.error(err))
+            }
     }
 
 }

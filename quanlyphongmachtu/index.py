@@ -358,5 +358,11 @@ def add_prescription():
     return jsonify({'code': 200})
 
 
+@app.route("/bacsi/thanhtoan/<khambenh_id>", methods=['get'])
+def thanhtoan_hoadon(khambenh_id):
+    thongtinphieukham = utils.get_infophieukham(id_phieukham=int(khambenh_id))
+    return render_template("bacsi/thanhtoanhoadon.html", thongtinphieukham=thongtinphieukham)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
