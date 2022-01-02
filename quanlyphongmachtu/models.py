@@ -34,6 +34,7 @@ class Medicine(BaseModel):
 
 class TienKham(BaseModel):
     tien_kham = Column(Float, nullable=False)
+    hoadons = relationship('HoaDonThanhToan', backref='tienkham_hoadon', lazy=True)
 
 
 class UserRole(BaseModel):
@@ -119,6 +120,7 @@ class PhieuKhamBenh(BaseModel):
     phieukhambenh_bacsi = relationship("UserInfo", foreign_keys=[bacsi_id], backref='userinfobacsi_khambenh', lazy=True)
     phieukhambenh_nguoikham = relationship("UserInfo", foreign_keys=[nguoikham_id], backref='userinfobenhnhan_khambenh',
                                            lazy=True)
+    hoadon = relationship("HoaDonThanhToan", backref='phieukham_hoadon', uselist=False, lazy=False)
 
 
 class PhieuKhamBenhDetail(db.Model):
@@ -126,6 +128,14 @@ class PhieuKhamBenhDetail(db.Model):
     medicine_id = Column(Integer, ForeignKey(Medicine.id), nullable=False, primary_key=True)
     quantity = Column(Integer, default=0)
     unit_price = Column(Float, default=0)
+
+
+class HoaDonThanhToan(BaseModel):
+    id_phieukham = Column(Integer, ForeignKey(PhieuKhamBenh.id), nullable=False, unique=True)
+    id_tienkham = Column(Integer, ForeignKey(TienKham.id), nullable=False)
+    ngaytao_hoadon = Column(DateTime, default=datetime.now())
+    tongtien_hoadon = Column(Float, nullable=False)
+
 
 
 

@@ -362,7 +362,9 @@ def add_prescription():
 @login_required
 def thanhtoan_hoadon(khambenh_id):
     thongtinphieukham = utils.get_infophieukham(id_phieukham=int(khambenh_id))
+
     return render_template("bacsi/thanhtoanhoadon.html", thongtinphieukham=thongtinphieukham)
+
 
 
 if __name__ == "__main__":
