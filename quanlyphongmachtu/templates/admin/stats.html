@@ -1,5 +1,70 @@
 {% extends 'admin/base.html'%}
 
 {%block body%}
-<h1 class="text-center text-danger"> THỐNG KÊ BÁO CÁO </h1>
+<h1 class="text-center text-danger"> THỐNG KÊ BÁO CÁO QUẢN TRỊ VIÊN</h1>
+<br>
+<h3 class="text-danger text-center ">BÁO CÁO DOANH THU THEO THÁNG</h3>
+    <div class="border-top border-dark">
+        <form>
+            <div class="form-group">
+                 <label class="text-danger font-weight-bold" for="dateInput">Nhập Tháng Cần Thống Kê Doanh Thu</label>
+                <input type="number" min="1" max="12" class="form-control" name="month" id="dateInput"/>
+            </div>
+            <input type="submit" value="Tìm Kiếm Theo Tháng" class="btn btn-danger"/>
+            </br>
+        </form>
+    </div>
+<br>
+<div class="row">
+    <div class="col-md-6 col-xs-12">
+        <table class="table table-hover table-bordered ">
+            <tr>
+                <th>Ngày</th>
+                <th>Số Bệnh Nhân Khám</th>
+                <th>Doanh Thu</th>
+                <th>Tỷ Lệ</th>
+            </tr>
+            {% for s in profit_stats %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>
+                    {% if s[2] %}
+                    {{ "{:,.1f}".format(s[2]) }} VND
+                    {% else %}
+                    0 VND
+                    {% endif %}
+                </td>
+                <td> {{ s[3] }}% </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-6 col-xs-12">
+        <canvas id="profitMonthChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+<script>
+    let total_profit_day=[], profit_day =[]
+     let colors = []
+    let borderColors = []
+    let r, g, b;
+    {%for s in profit_stats %}
+        total_profit_day.push({{s[2]}})
+        profit_day.push({{s[0]}})
+        r = Math.random()*255
+        g = Math.random()*255
+        b = Math.random()*255
+        colors.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
+        borderColors.push(`rgba(${r}, ${g}, ${b}, 1)`)
+    {%endfor%}
+    window.onload = function() {
+        profit_month_stats("profitMonthChart", total_profit_day, profit_day, colors, borderColors)
+    }
+</script>
+
 {% endblock %}
+

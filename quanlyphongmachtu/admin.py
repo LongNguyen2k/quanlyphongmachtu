@@ -1,10 +1,13 @@
+from datetime import datetime
+import utils
 from quanlyphongmachtu import admin, db, app
 from quanlyphongmachtu.models import Medicine, UnitMedicine, TienKham, QuyDinhKham, UserInfo, Account, UserRole, \
     PhoneNumber, AddressStreet
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
 from flask_login import logout_user, current_user
-from flask import redirect
+from flask import redirect, request
+
 
 
 class AuthenticatedUserModelView(ModelView):
@@ -101,7 +104,9 @@ class LogOutView(CheckLogInUser):
 class StatsView(CheckUserAuthenticatedAdmin):
     @expose('/')
     def index(self):
-        return self.render('/admin/stats.html')
+        month = request.args.get('month', datetime.now().month)
+
+        return self.render('/admin/stats.html', profit_stats=utils.profit_month_stats(month))
 
 
 admin.add_view(MedicineView(Medicine, db.session, 'Thuốc'))

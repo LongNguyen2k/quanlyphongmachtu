@@ -39,6 +39,7 @@ function addPrescription(userinfo_id, thongtinbenhnhan_id, total_amount) {
             }
             else
             {
+
                 fetch('/api/add-prescription', {
                     method: 'post',
                     body: JSON.stringify({
@@ -56,7 +57,10 @@ function addPrescription(userinfo_id, thongtinbenhnhan_id, total_amount) {
                     return res.json()
                 }).then(function(data){
                     if(data.code == 200)
+                    {
+                        location.reload()
                         window.location.replace("/bacsi/thanhtoan/"+thongtinbenhnhan_id)
+                        }
                     else if( data.code == 400)
                             alert(data.err_msg)
 
@@ -118,6 +122,7 @@ function deletePrescription(id){
 
 function pay_receipt(idphieukham, id_tienkham, tongtien_hoadon){
     if( confirm("Bác Sĩ Đồng Ý Thanh Toán Hóa Đơn! Tiếp Tục?") == true) {
+
         fetch('/api/pay_receipt_patient', {
             method: 'post',
             body: JSON.stringify({

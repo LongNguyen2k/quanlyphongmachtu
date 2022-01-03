@@ -1,7 +1,7 @@
 from datetime import datetime
 from datetime import date
 from quanlyphongmachtu import app, db
-from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber\
+from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber \
     , KhamBenh, QuyDinhKham, UnitMedicine, Medicine, PhieuKhamBenh, PhieuKhamBenhDetail, TienKham, HoaDonThanhToan
 from flask_login import current_user
 from sqlalchemy.sql import extract, func
@@ -23,8 +23,8 @@ def load_medicines(unitmedicine_id=None, keyword=None, from_price=None, to_price
         medicines = medicines.filter(Medicine.name.contains(keyword))
 
     page_size = app.config['PageSize']
-    start = (page-1) * page_size
-    return medicines.slice(start, start+page_size).all()
+    start = (page - 1) * page_size
+    return medicines.slice(start, start + page_size).all()
 
 
 def count_medicine():
@@ -125,7 +125,7 @@ def get_user_by_id(user_id):
 
 
 def account_info(user_id):
-    return Account.query.filter(Account.userinfo_id.__eq__(user_id))
+    return Account.query.filter(Account.userinfo_id.__eq__(user_id)).first()
 
 
 def phone_info(user_id):
@@ -305,7 +305,6 @@ def count_prescription(prescription):
 
 
 def add_prescription(prescription, **kwargs):
-
     if prescription:
         phieukham = PhieuKhamBenh(khambenh_id=kwargs.get('phieukhambenh'),
                                   bacsi_id=current_user.id,
@@ -358,3 +357,23 @@ def thanhtoanhoadon(idphieukham, idtienkham, tongtienhoadon):
                              tongtien_hoadon=tongtienhoadon)
     db.session.add(hoadon)
     db.session.commit()
+
+
+# thống kê tuần suất sử dụng thuốc theo tháng
+
+
+def profit_month_stats(month):
+    current_count_month = count_profit_month(month)
+    return db.session.query(extract('day', HoaDonThanhToan.ngaytao_hoadon),
+                            func.count(HoaDonThanhToan.id),
+                            func.sum(HoaDonThanhToan.tongtien_hoadon),
+                            func.count(HoaDonThanhToan.id)/current_count_month*100) \
+        .filter(extract('month', HoaDonThanhToan.ngaytao_hoadon) == month) \
+        .group_by(extract('day', HoaDonThanhToan.ngaytao_hoadon))\
+        .order_by(extract('day', HoaDonThanhToan.ngaytao_hoadon)).all()
+
+
+def count_profit_month(month):
+    count = db.session.query(func.count(HoaDonThanhToan.id)).filter(
+        extract('month', HoaDonThanhToan.ngaytao_hoadon) == month).first()
+    return count[0]

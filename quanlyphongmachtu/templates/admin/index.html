@@ -5,6 +5,7 @@
 {% if current_user.is_authenticated %}
 <h1 class="text-info"> QUẢN TRỊ VIÊN PHÒNG MẠCH TƯ</h1>
 <h3 class="text-success">{{current_user.first_name}} {{ current_user.last_name }} </h3>
+
 {% else %}
 
 <br/>
@@ -28,7 +29,6 @@
 
 {%block js%}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
 
-</script>
+
 {% endblock%}
