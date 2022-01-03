@@ -114,3 +114,31 @@ function deletePrescription(id){
         })
     }
 }
+
+
+function pay_receipt(idphieukham, id_tienkham, tongtien_hoadon){
+    if( confirm("Bác Sĩ Đồng Ý Thanh Toán Hóa Đơn! Tiếp Tục?") == true) {
+        fetch('/api/pay_receipt_patient', {
+            method: 'post',
+            body: JSON.stringify({
+                "id_phieukham": idphieukham,
+                "id_tienkham" : id_tienkham,
+                "tongtien_hoadon": tongtien_hoadon
+            }),
+             headers: {
+                        'Content-Type': 'application/json'
+            }
+        }).then(function(res) {
+            return res.json()
+        }).then(function(data) {
+             if(data.code == 200)
+             {
+                alert("Thanh Toán Hóa Đơn Bệnh Nhân Thành Công !!")
+                window.location.replace("/xemdanhsachkhambenh_bacsi")
+                }
+             else if( data.code == 400)
+                     alert(data.err_msg)
+
+        }).catch(err => console.error(err))
+    }
+}

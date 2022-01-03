@@ -2,7 +2,7 @@ from datetime import datetime
 from datetime import date
 from quanlyphongmachtu import app, db
 from quanlyphongmachtu.models import UserInfo, Account, UserRole, AddressStreet, PhoneNumber\
-    , KhamBenh, QuyDinhKham, UnitMedicine, Medicine, PhieuKhamBenh, PhieuKhamBenhDetail
+    , KhamBenh, QuyDinhKham, UnitMedicine, Medicine, PhieuKhamBenh, PhieuKhamBenhDetail, TienKham, HoaDonThanhToan
 from flask_login import current_user
 from sqlalchemy.sql import extract, func
 from twilio.rest import Client
@@ -336,3 +336,25 @@ def complete_prescription(phieukhambenh):
 def get_infophieukham(id_phieukham):
     thontin_phieukham = PhieuKhamBenh.query.filter(PhieuKhamBenh.khambenh_id.__eq__(id_phieukham)).first()
     return thontin_phieukham
+
+
+def get_infotienkham():
+    return TienKham.query.get(app.config['QuyDinhKham'])
+
+
+def tongtienhoadon(tienkham, tienthuoc):
+    return tienkham + tienthuoc
+
+
+def hoantatthanhtoan(id_phieukham):
+    phieukham_info = PhieuKhamBenh.query.get(id_phieukham)
+    phieukham_info.trangthaithanhtoan = True
+    db.session.commit()
+
+
+def thanhtoanhoadon(idphieukham, idtienkham, tongtienhoadon):
+    hoadon = HoaDonThanhToan(id_phieukham=idphieukham,
+                             id_tienkham=idtienkham,
+                             tongtien_hoadon=tongtienhoadon)
+    db.session.add(hoadon)
+    db.session.commit()

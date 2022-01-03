@@ -7,7 +7,7 @@
 
 {% if current_user.user_role_id == 4 and current_user.active == True %}
 <h1 class="text-info">Thanh Toán Hóa Đơn Cho Bệnh Nhân Đăng Ký Khám</h1>
-<h3 class="text-danger">ID Phiếu Khám: {{thongtinphieukham.id}}</h3>
+
 {% if thongtinphieukham.trangthaithanhtoan.__eq__(False) %}
 <div class="border border-dark" xmlns="http://www.w3.org/1999/html">
     <h3 class="text-danger text-center ">LẬP PHIẾU KHÁM BỆNH</h3>
@@ -15,11 +15,11 @@
         <div class="row">
             <div class="col-sm-3 col-md-6 border border-dark">
                 <br>
-                <p class="font-weight-bold">Họ Tên: </p>
+                <p class="font-weight-bold">Họ Tên: {{info_benhnhan.first_name}} {{info_benhnhan.last_name}} </p>
             </div>
             <div class="col-sm-9 col-md-6 border border-dark">
                 <br>
-                <p class="font-weight-bold">Ngày Khám: </p>
+                <p class="font-weight-bold">Ngày Khám: {{thongtinphieukham.ngaytao_phieukham}}</p>
 
             </div>
         </div>
@@ -29,29 +29,37 @@
         <div class="row">
             <div class="col-sm-3 col-md-6 border-right border-dark">
                 <p class="font-weight-bold">Tiền Khám </p>
+                <input class="form-control" type="text" disabled name="tienkham" value="{{ '{:,.1f}'.format(tienkham.tien_kham)}}VND"/>
 
                 <br>
             </div>
             <div class="col-sm-9 col-md-6">
                 <p class="font-weight-bold">Tiền Thuốc </p>
 
+                <input class="form-control" type="text" disabled name="tienthuoc" value="{{ '{:,.1f}'.format(thongtinphieukham.tongtienthuoc)}}VND"/>
+                <br>
             </div>
         </div>
     </div>
 
     <div class="col-sm-12 col-md-12 border-top border-dark">
-        <p class="font-weight-bold">Tổng Tiền Thuốc</p>
-        <input id="idcachdung_thuoc" class="form-control" type="text" name="cachdungthuoc"
-               placeholder="Nhập Cách Dùng Thuốc Kê Toa" required/>
+        <br>
+        <p class="font-weight-bold">Tổng Tiền Thuốc: <span>{{ '{:,.1f}'.format(tongtienhoadon)}}VND</span></p>
         <br>
     </div>
 
 
 </div>
-
+<br>
+{%if current_user.is_authenticated%}
+<input type="button" value="Xác nhận thanh toán hóa đơn" class="btn btn-danger" onclick="pay_receipt({{thongtinphieukham.id}}, {{tienkham.id}}, {{tongtienhoadon}})">
+{%else%}
+<a href="{{url_for('user_signin')}}">Đăng Nhập Để THanh toán hóa đơn cho bệnh nhân</a>
+{%endif%}
 
 {%else%}
 <h3>Phiếu Khám Đã Được Thanh Toán</h3>
+<a href="{{url_for('xemdanhsach_khambenh_bacsi')}}">Quay về trang lập phiếu khám</a>
 {%endif%}
 {%else%}
 <h1 class="text-danger text-center"> BẠN KHÔNG CÓ QUYỀN HẠN ĐỂ TRUY CẬP TRANG NÀY</h1>

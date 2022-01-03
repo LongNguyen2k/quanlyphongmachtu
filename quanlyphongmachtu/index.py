@@ -362,9 +362,30 @@ def add_prescription():
 @login_required
 def thanhtoan_hoadon(khambenh_id):
     thongtinphieukham = utils.get_infophieukham(id_phieukham=int(khambenh_id))
+    info_benhnhan = utils.get_user_by_id(thongtinphieukham.nguoikham_id)
+    tienkham = utils.get_infotienkham()
+    tongtienhoadon = utils.tongtienhoadon(tienkham.tien_kham, thongtinphieukham.tongtienthuoc)
+    return render_template("bacsi/thanhtoanhoadon.html",
+                           thongtinphieukham=thongtinphieukham,
+                           info_benhnhan=info_benhnhan,
+                           tienkham=tienkham,
+                           tongtienhoadon=tongtienhoadon)
 
-    return render_template("bacsi/thanhtoanhoadon.html", thongtinphieukham=thongtinphieukham)
 
+@app.route('/api/pay_receipt_patient', methods=["post"])
+@login_required
+def pay_receipt():
+    data = request.json
+    id_phieukham = data.get("id_phieukham")
+    id_tienkham = data.get("id_tienkham")
+    tongtien_hoadon = data.get("tongtien_hoadon")
+    try:
+        utils.thanhtoanhoadon(idphieukham=id_phieukham, idtienkham=id_tienkham, tongtienhoadon=tongtien_hoadon)
+        utils.hoantatthanhtoan(id_phieukham=id_phieukham)
+    except:
+        return jsonify({'code': 400})
+
+    return jsonify({'code': 200})
 
 
 if __name__ == "__main__":
