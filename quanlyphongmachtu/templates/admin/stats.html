@@ -7,7 +7,7 @@
     <div class="border-top border-dark">
         <form>
             <div class="form-group">
-                 <label class="text-danger font-weight-bold" for="dateInput">Nhập Tháng Cần Thống Kê Doanh Thu</label>
+                 <label class="text-danger font-weight-bold">Nhập Tháng Cần Thống Kê Doanh Thu</label>
                 <input type="number" min="1" max="12" class="form-control" name="month" />
             </div>
             <input type="submit" value="Tìm Kiếm Theo Tháng" class="btn btn-danger"/>
@@ -40,7 +40,13 @@
             {% endfor %}
         </table>
 
-        <span class="form-control">Tổng Doanh Thu:  {{ "{:,.1f}".format(total_month_profit) }} VND</span>
+        <span class="form-control">
+            {%if total_month_profit %}
+                Tổng Doanh Thu:  {{ "{:,.1f}".format(total_month_profit) }} VND
+            {% else %}
+                0 VND
+            {% endif %}
+        </span>
     </div>
     <div class="col-md-6 col-xs-12">
         <canvas id="profitMonthChart"></canvas>
