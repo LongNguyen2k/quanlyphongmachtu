@@ -39,6 +39,8 @@
             </tr>
             {% endfor %}
         </table>
+
+        <span class="form-control">Tổng Doanh Thu:  {{ "{:,.1f}".format(total_month_profit) }} VND</span>
     </div>
     <div class="col-md-6 col-xs-12">
         <canvas id="profitMonthChart"></canvas>
@@ -47,7 +49,7 @@
 
 
 <br>
-<h3 class="text-danger text-center ">BÁO CÁO SỬ DỤNG THUỐC</h3>
+<h3 class="text-danger text-center ">BÁO CÁO SỬ DỤNG THUỐC THEO THÁNG</h3>
     <div class="border-top border-dark">
         <form>
             <div class="form-group">
@@ -78,6 +80,7 @@
             </tr>
             {% endfor %}
         </table>
+
     </div>
     <div class="col-md-6 col-xs-12">
         <canvas id="medicineMonthStat"></canvas>

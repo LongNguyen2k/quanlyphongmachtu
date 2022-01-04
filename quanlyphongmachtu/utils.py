@@ -379,6 +379,12 @@ def count_profit_month(month):
     return count[0]
 
 
+def total_profit_mont(month):
+    count = db.session.query(func.sum(HoaDonThanhToan.tongtien_hoadon)).filter(
+        extract('month', HoaDonThanhToan.ngaytao_hoadon) == month).first()
+    return count[0]
+
+
 def medicine_rates_month_stats(month):
     return db.session.query(Medicine.name,
                             UnitMedicine.name,
