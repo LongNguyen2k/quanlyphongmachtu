@@ -8,7 +8,7 @@
         <form>
             <div class="form-group">
                  <label class="text-danger font-weight-bold" for="dateInput">Nhập Tháng Cần Thống Kê Doanh Thu</label>
-                <input type="number" min="1" max="12" class="form-control" name="month" id="dateInput"/>
+                <input type="number" min="1" max="12" class="form-control" name="month" />
             </div>
             <input type="submit" value="Tìm Kiếm Theo Tháng" class="btn btn-danger"/>
             </br>
@@ -45,24 +45,79 @@
     </div>
 </div>
 
+
+<br>
+<h3 class="text-danger text-center ">BÁO CÁO SỬ DỤNG THUỐC</h3>
+    <div class="border-top border-dark">
+        <form>
+            <div class="form-group">
+                <label class="text-danger font-weight-bold">Nhập Tháng Cần Thống Kê Tuần Suất Sử Dụng Thuốc</label>
+                <input type="number" min="1" max="12" class="form-control" name="monthMedicine" />
+            </div>
+            <input type="submit" value="Tìm Kiếm Theo Tháng" class="btn btn-danger"/>
+            </br>
+        </form>
+    </div>
+<br>
+
+<div class="row">
+    <div class="col-md-6 col-xs-12">
+        <table class="table table-hover table-bordered ">
+            <tr>
+                <th>Thuốc</th>
+                <th>Đơn Vị</th>
+                <th>Số Lượng</th>
+                <th>Số Lần Kê Đơn</th>
+            </tr>
+            {% for s in medicine_stats %}
+            <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }} {{ s[1] }}</td>
+                <td> {{ s[3] }} lần </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-6 col-xs-12">
+        <canvas id="medicineMonthStat"></canvas>
+    </div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/stats.js') }}"></script>
 <script>
     let total_profit_day=[], profit_day =[]
-     let colors = []
-    let borderColors = []
+    let medicine_name =[], medicine_quantity = [], amount_medicine_per_test = []
+     let colors = [], colors2 = []
+    let borderColors = [], borderColors2 = []
     let r, g, b;
     {%for s in profit_stats %}
         total_profit_day.push({{s[2]}})
-        profit_day.push({{s[0]}})
+        profit_day.push(" Ngày {{s[0]}}")
         r = Math.random()*255
         g = Math.random()*255
         b = Math.random()*255
         colors.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
         borderColors.push(`rgba(${r}, ${g}, ${b}, 1)`)
     {%endfor%}
+
+    {%for s in medicine_stats %}
+        medicine_name.push("{{s[0]}}")
+        medicine_quantity.push({{ s[2] }})
+        amount_medicine_per_test.push({{ s[3] }})
+        r = Math.random()*255
+        g = Math.random()*255
+        b = Math.random()*255
+        colors2.push(`rgba(${r}, ${g}, ${b}, 0.2)`)
+        borderColors2.push(`rgba(${r}, ${g}, ${b}, 1)`)
+    {%endfor%}
+
     window.onload = function() {
         profit_month_stats("profitMonthChart", total_profit_day, profit_day, colors, borderColors)
+        medicine_month_stats("medicineMonthStat", medicine_name, medicine_quantity, amount_medicine_per_test, colors2, borderColors2)
+
     }
 </script>
 

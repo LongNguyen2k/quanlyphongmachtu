@@ -377,3 +377,14 @@ def count_profit_month(month):
     count = db.session.query(func.count(HoaDonThanhToan.id)).filter(
         extract('month', HoaDonThanhToan.ngaytao_hoadon) == month).first()
     return count[0]
+
+
+def medicine_rates_month_stats(month):
+    return db.session.query(Medicine.name,
+                            UnitMedicine.name,
+                            func.sum(PhieuKhamBenhDetail.quantity),
+                            func.count(PhieuKhamBenhDetail.medicine_id))\
+                        .join(PhieuKhamBenhDetail, PhieuKhamBenhDetail.medicine_id.__eq__(Medicine.id))\
+                        .join(UnitMedicine).join(PhieuKhamBenh)\
+                        .filter(extract('month', PhieuKhamBenh.ngaytao_phieukham).__eq__(month))\
+                        .group_by(Medicine.id).all()

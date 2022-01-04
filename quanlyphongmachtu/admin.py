@@ -105,8 +105,8 @@ class StatsView(CheckUserAuthenticatedAdmin):
     @expose('/')
     def index(self):
         month = request.args.get('month', datetime.now().month)
-
-        return self.render('/admin/stats.html', profit_stats=utils.profit_month_stats(month))
+        monthmedicine = request.args.get('monthMedicine', datetime.now().month)
+        return self.render('/admin/stats.html', profit_stats=utils.profit_month_stats(month), medicine_stats=utils.medicine_rates_month_stats(monthmedicine))
 
 
 admin.add_view(MedicineView(Medicine, db.session, 'Thuốc'))

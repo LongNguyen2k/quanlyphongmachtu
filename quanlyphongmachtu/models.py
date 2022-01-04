@@ -26,7 +26,7 @@ class Medicine(BaseModel):
     usage = Column(String(255))
     created_date = Column(DateTime, default=datetime.now())
     unitmedicine_id = Column(Integer, ForeignKey(UnitMedicine.id), nullable=False)
-    details = relationship('PhieuKhamBenhDetail', backref='medicine_detail', lazy=True)
+    details = relationship('PhieuKhamBenhDetail', backref='medicine_detail', lazy=False)
 
     def __str__(self):
         return self.name
@@ -135,10 +135,6 @@ class HoaDonThanhToan(BaseModel):
     id_tienkham = Column(Integer, ForeignKey(TienKham.id), nullable=False)
     ngaytao_hoadon = Column(DateTime, default=datetime.now())
     tongtien_hoadon = Column(Float, nullable=False)
-
-
-
-
 
 
 #     donvithuocs = relationship('DonViThuoc', secondary='thuoc_donvithuoc', lazy='subquery',
