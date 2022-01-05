@@ -190,7 +190,8 @@ def getlist_patient():
 
 
 def xemthongtin_khambenh(user_id):
-    thongtin_khambenh = KhamBenh.query.filter(KhamBenh.user_info_id.__eq__(user_id))
+    thongtin_khambenh = KhamBenh.query.filter(KhamBenh.user_info_id.__eq__(user_id)).order_by(
+        KhamBenh.lich_khambenh.desc(), KhamBenh.id.desc())
     return thongtin_khambenh
 
 
@@ -367,9 +368,9 @@ def profit_month_stats(month):
     return db.session.query(extract('day', HoaDonThanhToan.ngaytao_hoadon),
                             func.count(HoaDonThanhToan.id),
                             func.sum(HoaDonThanhToan.tongtien_hoadon),
-                            func.count(HoaDonThanhToan.id)/current_count_month*100) \
+                            func.count(HoaDonThanhToan.id) / current_count_month * 100) \
         .filter(extract('month', HoaDonThanhToan.ngaytao_hoadon) == month) \
-        .group_by(extract('day', HoaDonThanhToan.ngaytao_hoadon))\
+        .group_by(extract('day', HoaDonThanhToan.ngaytao_hoadon)) \
         .order_by(extract('day', HoaDonThanhToan.ngaytao_hoadon)).all()
 
 
@@ -389,8 +390,8 @@ def medicine_rates_month_stats(month):
     return db.session.query(Medicine.name,
                             UnitMedicine.name,
                             func.sum(PhieuKhamBenhDetail.quantity),
-                            func.count(PhieuKhamBenhDetail.medicine_id))\
-                        .join(PhieuKhamBenhDetail, PhieuKhamBenhDetail.medicine_id.__eq__(Medicine.id))\
-                        .join(UnitMedicine).join(PhieuKhamBenh)\
-                        .filter(extract('month', PhieuKhamBenh.ngaytao_phieukham).__eq__(month))\
-                        .group_by(Medicine.id).all()
+                            func.count(PhieuKhamBenhDetail.medicine_id)) \
+        .join(PhieuKhamBenhDetail, PhieuKhamBenhDetail.medicine_id.__eq__(Medicine.id)) \
+        .join(UnitMedicine).join(PhieuKhamBenh) \
+        .filter(extract('month', PhieuKhamBenh.ngaytao_phieukham).__eq__(month)) \
+        .group_by(Medicine.id).all()
